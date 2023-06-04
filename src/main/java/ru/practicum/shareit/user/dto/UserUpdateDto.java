@@ -1,16 +1,18 @@
-package ru.practicum.shareit.user.model;
+package ru.practicum.shareit.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.constraints.Email;
+
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
-public class User {
-    private Long id;
+public class UserUpdateDto {
     private String name;
+    @Email(message = "User email must be correct email")
     private String email;
 }
