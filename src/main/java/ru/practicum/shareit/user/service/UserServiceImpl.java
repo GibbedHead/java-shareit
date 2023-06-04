@@ -2,6 +2,7 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.model.NotUniqueFieldException;
 import ru.practicum.shareit.exception.model.UserNotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserUpdateDto;
@@ -20,6 +21,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto save(UserDto userDto) {
+        if (userStorage.isNotUniqueEmail(userDto.getEmail(), userDto.getId())) {
+            throw new NotUniqueFieldException("Email must be unique");
+        }
         return UserMapper.toUserDto(
                 userStorage.save(
                         UserMapper.toUser(userDto)
@@ -50,6 +54,9 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOptional = userStorage.findById(id);
         if (userOptional.isEmpty()) {
             throw new UserNotFoundException(String.format("User id=%d not found", id));
+        }
+        if (userStorage.isNotUniqueEmail(userDto.getEmail(), id)) {
+            throw new NotUniqueFieldException("Email must be unique");
         }
         return UserMapper.toUserDto(
                 userStorage.update(

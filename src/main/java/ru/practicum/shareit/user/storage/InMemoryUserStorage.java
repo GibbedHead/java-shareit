@@ -1,7 +1,6 @@
 package ru.practicum.shareit.user.storage;
 
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.exception.model.NotUniqueFieldException;
 import ru.practicum.shareit.exception.model.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 
@@ -14,9 +13,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User save(User user) {
-        if (isNotUniqueEmail(user.getEmail(), user.getId())) {
-            throw new NotUniqueFieldException("Email must be unique");
-        }
         long id = getId();
         user.setId(id);
         users.put(id, user);
@@ -35,9 +31,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User update(User user) {
-        if (isNotUniqueEmail(user.getEmail(), user.getId())) {
-            throw new NotUniqueFieldException("Email must be unique");
-        }
         if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
             return user;
@@ -58,12 +51,12 @@ public class InMemoryUserStorage implements UserStorage {
         return ++id;
     }
 
-    private boolean isNotUniqueEmail(String email, Long id) {
+    public boolean isNotUniqueEmail(String email, Long id) {
         for (User user : users.values()) {
             if (user.getEmail().equals(email) && !Objects.equals(user.getId(), id)) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 }

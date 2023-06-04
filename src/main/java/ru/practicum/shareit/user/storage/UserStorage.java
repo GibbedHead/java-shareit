@@ -16,4 +16,6 @@ public interface UserStorage {
 
     void deleteById(long id);
 
+    boolean isNotUniqueEmail(String email, Long id);
+
 }

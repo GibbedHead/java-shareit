@@ -9,6 +9,7 @@ import ru.practicum.shareit.user.dto.UserUpdateDto;
 import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/users")
@@ -29,5 +30,23 @@ public class UserController {
     public UserDto update(@PathVariable long id, @Valid @RequestBody UserUpdateDto userDto) {
         log.info("Update user id " + id + ". Data: " + userDto);
         return userService.update(id, userDto);
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto findById(@PathVariable long id) {
+        return userService.findById(id);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserDto> findById() {
+        return userService.findAll();
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable long id) {
+        userService.deleteById(id);
     }
 }
