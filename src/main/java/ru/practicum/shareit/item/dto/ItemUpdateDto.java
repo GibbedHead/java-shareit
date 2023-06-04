@@ -7,20 +7,14 @@ import lombok.ToString;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
-public class ItemDto {
+public class ItemUpdateDto {
     private Long id;
-    @NotBlank(message = "Item name must not be blank")
     private String name;
-    @NotBlank(message = "Item description must not be blank")
     private String description;
-    @NotEmpty(message = "Item availability must not be empty")
     private Boolean available;
     private User owner;
     private ItemRequest request;
