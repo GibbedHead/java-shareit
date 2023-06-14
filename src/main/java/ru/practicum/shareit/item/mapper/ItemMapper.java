@@ -9,7 +9,7 @@ public final class ItemMapper {
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
-                item.isAvailable(),
+                item.getAvailable(),
                 item.getOwner(),
                 item.getRequest()
         );

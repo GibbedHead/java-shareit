@@ -15,7 +15,10 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public Item save(Item item) {
-        return null;
+        Long id = getId();
+        item.setId(id);
+        items.put(id, item);
+        return item;
     }
 
     @Override

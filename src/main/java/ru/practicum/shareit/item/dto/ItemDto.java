@@ -8,7 +8,7 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -20,7 +20,7 @@ public class ItemDto {
     private String name;
     @NotBlank(message = "Item description must not be blank")
     private String description;
-    @NotEmpty(message = "Item availability must not be empty")
+    @NotNull(message = "Item availability must not be empty")
     private Boolean available;
     private User owner;
     private ItemRequest request;
