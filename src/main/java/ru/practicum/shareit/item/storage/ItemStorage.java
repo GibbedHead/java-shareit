@@ -16,4 +16,6 @@ public interface ItemStorage {
 
     void deleteById(Long id);
 
+    List<Item> findByNameOrDescription(String text);
+
 }

@@ -59,4 +59,11 @@ public class ItemController {
         log.info("Delete item request id " + id);
         itemService.deleteById(id);
     }
+
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ItemDto> findByNameOrDescription(@RequestParam String text) {
+        log.info("Get items request by text '" + text + "'");
+        return itemService.findByNameOrDescription(text);
+    }
 }

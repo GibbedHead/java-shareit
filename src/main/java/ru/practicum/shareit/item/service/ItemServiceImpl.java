@@ -82,4 +82,14 @@ public class ItemServiceImpl implements ItemService {
     public void deleteById(Long id) {
         itemStorage.deleteById(id);
     }
+
+    @Override
+    public List<ItemDto> findByNameOrDescription(String text) {
+        if (text.isEmpty()) {
+            return List.of();
+        }
+        return itemStorage.findByNameOrDescription(text).stream()
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
+    }
 }

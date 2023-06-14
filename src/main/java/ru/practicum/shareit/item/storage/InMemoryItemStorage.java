@@ -50,6 +50,21 @@ public class InMemoryItemStorage implements ItemStorage {
         throw new ItemNotFoundException(String.format("Item id=%d not found", id));
     }
 
+    @Override
+    public List<Item> findByNameOrDescription(String text) {
+        return items.values().stream()
+                .filter(item -> hasTextAndIsAvailable(item, text))
+                .collect(Collectors.toList());
+    }
+
+    private boolean hasTextAndIsAvailable(Item item, String text) {
+        return (item.getName().toLowerCase().contains(text.toLowerCase())
+                ||
+                item.getDescription().toLowerCase().contains(text.toLowerCase()))
+                &&
+                item.getAvailable();
+    }
+
     private long getId() {
         return ++id;
     }
