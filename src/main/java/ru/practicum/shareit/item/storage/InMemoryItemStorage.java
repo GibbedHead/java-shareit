@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.storage;
 
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.exception.model.ItemNotFoundException;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.HashMap;
@@ -22,8 +23,8 @@ public class InMemoryItemStorage implements ItemStorage {
     }
 
     @Override
-    public Optional<Item> findById(long id) {
-        return Optional.empty();
+    public Optional<Item> findById(Long id) {
+        return Optional.ofNullable(items.get(id));
     }
 
     @Override
@@ -33,11 +34,15 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public Item update(Item item) {
-        return null;
+        if (items.containsKey(item.getId())) {
+            items.put(item.getId(), item);
+            return item;
+        }
+        throw new ItemNotFoundException(String.format("Item id=%d not found", item.getId()));
     }
 
     @Override
-    public void deleteById(long id) {
+    public void deleteById(Long id) {
 
     }
 

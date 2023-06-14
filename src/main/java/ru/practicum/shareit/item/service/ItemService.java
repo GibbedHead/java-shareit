@@ -12,7 +12,7 @@ public interface ItemService {
 
     List<ItemDto> findAll();
 
-    ItemDto update(Long id, ItemUpdateDto itemUpdateDto);
+    ItemDto update(Long userId, Long id, ItemUpdateDto itemUpdateDto);
 
     void deleteById(long id);
 }

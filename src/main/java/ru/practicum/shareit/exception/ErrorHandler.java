@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.practicum.shareit.exception.model.AccessException;
 import ru.practicum.shareit.exception.model.EntityNotFoundException;
 import ru.practicum.shareit.exception.model.ErrorResponse;
 import ru.practicum.shareit.exception.model.NotUniqueFieldException;
@@ -30,6 +31,14 @@ public class ErrorHandler {
     @ExceptionHandler(NotUniqueFieldException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleNotUniqueFieldException(final Exception e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
+
+    @ExceptionHandler(AccessException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleAccessException(final Exception e) {
         return new ErrorResponse(
                 e.getMessage()
         );

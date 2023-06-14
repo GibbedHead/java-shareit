@@ -8,12 +8,12 @@ import java.util.Optional;
 public interface ItemStorage {
     Item save(Item item);
 
-    Optional<Item> findById(long id);
+    Optional<Item> findById(Long id);
 
     List<Item> findAll();
 
     Item update(Item item);
 
-    void deleteById(long id);
+    void deleteById(Long id);
 
 }
