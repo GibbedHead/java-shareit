@@ -8,11 +8,11 @@ import java.util.List;
 public interface ItemService {
     ItemDto save(Long userId, ItemDto itemDto);
 
-    ItemDto findById(long id);
+    ItemDto findById(Long id);
 
-    List<ItemDto> findAll();
+    List<ItemDto> findByUserId(Long userId);
 
     ItemDto update(Long userId, Long id, ItemUpdateDto itemUpdateDto);
 
-    void deleteById(long id);
+    void deleteById(Long id);
 }

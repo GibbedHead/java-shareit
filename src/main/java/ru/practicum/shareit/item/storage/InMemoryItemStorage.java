@@ -4,10 +4,8 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.model.ItemNotFoundException;
 import ru.practicum.shareit.item.model.Item;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryItemStorage implements ItemStorage {
@@ -28,8 +26,10 @@ public class InMemoryItemStorage implements ItemStorage {
     }
 
     @Override
-    public List<Item> findAll() {
-        return null;
+    public List<Item> findByUserId(Long userId) {
+        return items.values().stream()
+                .filter(i -> Objects.equals(i.getOwner().getId(), userId))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -43,7 +43,11 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public void deleteById(Long id) {
-
+        if (items.containsKey(id)) {
+            items.remove(id);
+            return;
+        }
+        throw new ItemNotFoundException(String.format("Item id=%d not found", id));
     }
 
     private long getId() {

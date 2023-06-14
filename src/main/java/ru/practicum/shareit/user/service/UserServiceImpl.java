@@ -10,9 +10,9 @@ import ru.practicum.shareit.user.maper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,11 +42,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> findAll() {
-        List<UserDto> users = new ArrayList<>();
-        for (User user : userStorage.findAll()) {
-            users.add(UserMapper.toUserDto(user));
-        }
-        return users;
+        return userStorage.findAll().stream()
+                .map(UserMapper::toUserDto)
+                .collect(Collectors.toList());
     }
 
     @Override

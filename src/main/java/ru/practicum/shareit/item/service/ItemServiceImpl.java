@@ -16,6 +16,7 @@ import ru.practicum.shareit.user.storage.UserStorage;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,13 +40,19 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto findById(long id) {
-        return null;
+    public ItemDto findById(Long id) {
+        Optional<Item> itemOptional = itemStorage.findById(id);
+        if (itemOptional.isEmpty()) {
+            throw new ItemNotFoundException(String.format("Item id=%d not found", id));
+        }
+        return ItemMapper.toItemDto(itemOptional.get());
     }
 
     @Override
-    public List<ItemDto> findAll() {
-        return null;
+    public List<ItemDto> findByUserId(Long userId) {
+        return itemStorage.findByUserId(userId).stream()
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -72,7 +79,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void deleteById(long id) {
-
+    public void deleteById(Long id) {
+        itemStorage.deleteById(id);
     }
 }

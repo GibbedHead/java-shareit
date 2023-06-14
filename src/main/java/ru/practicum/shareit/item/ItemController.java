@@ -9,6 +9,7 @@ import ru.practicum.shareit.item.dto.ItemUpdateDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/items")
@@ -36,5 +37,26 @@ public class ItemController {
     ) {
         log.info("Update item id " + id + ". Data: " + itemUpdateDto);
         return itemService.update(userId, id, itemUpdateDto);
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ItemDto findById(@PathVariable Long id) {
+        log.info("Get item request id " + id);
+        return itemService.findById(id);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<ItemDto> findByUserId(@RequestHeader("X-Sharer-User-Id") Long userId) {
+        log.info("Get items request by userId " + userId);
+        return itemService.findByUserId(userId);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        log.info("Delete item request id " + id);
+        itemService.deleteById(id);
     }
 }

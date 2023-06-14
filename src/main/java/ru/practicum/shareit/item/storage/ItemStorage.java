@@ -10,7 +10,7 @@ public interface ItemStorage {
 
     Optional<Item> findById(Long id);
 
-    List<Item> findAll();
+    List<Item> findByUserId(Long userId);
 
     Item update(Item item);
 
