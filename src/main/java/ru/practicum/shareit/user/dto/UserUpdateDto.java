@@ -1,9 +1,7 @@
 package ru.practicum.shareit.user.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.Email;
 
@@ -11,8 +9,9 @@ import javax.validation.constraints.Email;
 @Setter
 @ToString
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserUpdateDto {
-    private String name;
+    String name;
     @Email(message = "User email must be correct email")
-    private String email;
+    String email;
 }

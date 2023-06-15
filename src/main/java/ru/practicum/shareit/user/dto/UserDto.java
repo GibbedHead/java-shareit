@@ -1,9 +1,7 @@
 package ru.practicum.shareit.user.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -12,11 +10,12 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @ToString
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDto {
     Long id;
     @NotBlank(message = "User name must not be blank")
-    private String name;
+    String name;
     @NotBlank(message = "User email must not be blank")
     @Email(message = "User email must be correct email")
-    private String email;
+    String email;
 }

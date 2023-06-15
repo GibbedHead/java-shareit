@@ -1,9 +1,7 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
@@ -14,14 +12,15 @@ import javax.validation.constraints.NotNull;
 @Setter
 @ToString
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemDto {
-    private Long id;
+    Long id;
     @NotBlank(message = "Item name must not be blank")
-    private String name;
+    String name;
     @NotBlank(message = "Item description must not be blank")
-    private String description;
+    String description;
     @NotNull(message = "Item availability must not be empty")
-    private Boolean available;
-    private User owner;
-    private ItemRequest request;
+    Boolean available;
+    User owner;
+    ItemRequest request;
 }

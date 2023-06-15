@@ -1,9 +1,7 @@
 package ru.practicum.shareit.request.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
@@ -12,9 +10,10 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemRequest {
-    private long id;
-    private String description;
-    private User requestor;
-    private LocalDateTime created;
+    long id;
+    String description;
+    User requestor;
+    LocalDateTime created;
 }
