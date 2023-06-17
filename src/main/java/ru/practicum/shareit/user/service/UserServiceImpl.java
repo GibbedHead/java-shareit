@@ -2,14 +2,18 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.factory.Mappers;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.model.NotUniqueFieldException;
 import ru.practicum.shareit.exception.model.UserNotFoundException;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.dto.UserUpdateDto;
+import ru.practicum.shareit.user.dto.RequestAddUserDto;
+import ru.practicum.shareit.user.dto.RequestUpdateUserDto;
+import ru.practicum.shareit.user.dto.ResponseUserDto;
 import ru.practicum.shareit.user.maper.UserMapper;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,58 +23,69 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
-    private final UserStorage userStorage;
+
+    private static final String USER_NOT_FOUND_MESSAGE = "User id=%d not found";
+    private final UserRepository userRepository;
+    private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
 
     @Override
-    public UserDto save(UserDto userDto) {
-        if (userStorage.isNotUniqueEmail(userDto.getEmail(), userDto.getId())) {
-            log.error("Email must be unique");
+    public ResponseUserDto save(RequestAddUserDto requestAddUserDto) {
+        try {
+            return userMapper.userToResponseDto(
+                    userRepository.save(
+                            userMapper.addDtoToUser(requestAddUserDto)
+                    )
+            );
+        } catch (DataIntegrityViolationException exception) {
+            log.error("User not found. Email must be unique");
             throw new NotUniqueFieldException("Email must be unique");
         }
-        return UserMapper.toUserDto(
-                userStorage.save(
-                        UserMapper.toUser(userDto)
-                )
-        );
     }
 
     @Override
-    public UserDto findById(long id) {
-        Optional<User> userOptional = userStorage.findById(id);
+    public ResponseUserDto findById(Long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty()) {
-            log.error(String.format("User id=%d not found", id));
-            throw new UserNotFoundException(String.format("User id=%d not found", id));
+            log.error(String.format(USER_NOT_FOUND_MESSAGE, userId));
+            throw new UserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, userId));
         }
-        return UserMapper.toUserDto(userOptional.get());
+        return userMapper.userToResponseDto(userOptional.get());
     }
 
     @Override
-    public List<UserDto> findAll() {
-        return userStorage.findAll().stream()
-                .map(UserMapper::toUserDto)
+    public List<ResponseUserDto> findAll() {
+        return userRepository.findAll().stream()
+                .map(userMapper::userToResponseDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public UserDto update(Long id, UserUpdateDto userDto) {
-        Optional<User> userOptional = userStorage.findById(id);
+    public ResponseUserDto update(Long userId, RequestUpdateUserDto requestUpdateUserDto) {
+        Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isEmpty()) {
-            log.error(String.format("User id=%d not found", id));
-            throw new UserNotFoundException(String.format("User id=%d not found", id));
+            log.error(String.format(USER_NOT_FOUND_MESSAGE, userId));
+            throw new UserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, userId));
         }
-        if (userStorage.isNotUniqueEmail(userDto.getEmail(), id)) {
-            log.error("Email must be unique");
+        userMapper.updateUserFromRequestUpdateDto(requestUpdateUserDto, userOptional.get());
+        try {
+            return userMapper.userToResponseDto(
+                    userRepository.save(
+                            userOptional.get()
+                    )
+            );
+        } catch (DataIntegrityViolationException exception) {
+            log.error("User not found. Email must be unique");
             throw new NotUniqueFieldException("Email must be unique");
         }
-        return UserMapper.toUserDto(
-                userStorage.update(
-                        UserMapper.updateUserDtoToUser(userOptional.get(), userDto)
-                )
-        );
     }
 
     @Override
-    public void deleteById(long id) {
-        userStorage.deleteById(id);
+    public void deleteById(Long userId) {
+        try {
+            userRepository.deleteById(userId);
+        } catch (EmptyResultDataAccessException e) {
+            log.error(String.format(USER_NOT_FOUND_MESSAGE, userId));
+            throw new UserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, userId));
+        }
     }
 }

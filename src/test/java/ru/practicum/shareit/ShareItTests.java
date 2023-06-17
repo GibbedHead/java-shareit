@@ -2,9 +2,9 @@ package ru.practicum.shareit;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.RequestAddItemDto;
 import ru.practicum.shareit.item.model.ItemTestGenerator;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.RequestAddUserDto;
 import ru.practicum.shareit.user.model.UserTestGenerator;
 
 import javax.validation.ConstraintViolation;
@@ -21,73 +21,73 @@ class ShareItTests {
 
     @Test
     void testValidUser() {
-        UserDto validUser = UserTestGenerator.getUser();
-        Set<ConstraintViolation<UserDto>> validViolations = validator.validate(validUser);
-        assertEquals(validViolations.size(), 0);
+        RequestAddUserDto validUser = UserTestGenerator.getUser();
+        Set<ConstraintViolation<RequestAddUserDto>> validViolations = validator.validate(validUser);
+        assertEquals(0, validViolations.size());
     }
 
     @Test
     void requestUserNameShouldNotBeBlank() {
-        UserDto nullNameUser = UserTestGenerator.getNullNameUser();
-        Set<ConstraintViolation<UserDto>> nullViolations = validator.validate(nullNameUser);
-        assertEquals(nullViolations.size(), 1);
+        RequestAddUserDto nullNameUser = UserTestGenerator.getNullNameUser();
+        Set<ConstraintViolation<RequestAddUserDto>> nullViolations = validator.validate(nullNameUser);
+        assertEquals(1, nullViolations.size());
 
-        UserDto emptyNameUser = UserTestGenerator.getEmptyNameUser();
-        Set<ConstraintViolation<UserDto>> emptyViolations = validator.validate(emptyNameUser);
-        assertEquals(emptyViolations.size(), 1);
+        RequestAddUserDto emptyNameUser = UserTestGenerator.getEmptyNameUser();
+        Set<ConstraintViolation<RequestAddUserDto>> emptyViolations = validator.validate(emptyNameUser);
+        assertEquals(1, emptyViolations.size());
     }
 
     @Test
     void requestUserEmailShouldNotBeBlank() {
-        UserDto nullEmailUser = UserTestGenerator.getNullEmailUser();
-        Set<ConstraintViolation<UserDto>> nullViolations = validator.validate(nullEmailUser);
-        assertEquals(nullViolations.size(), 1);
+        RequestAddUserDto nullEmailUser = UserTestGenerator.getNullEmailUser();
+        Set<ConstraintViolation<RequestAddUserDto>> nullViolations = validator.validate(nullEmailUser);
+        assertEquals(1, nullViolations.size());
 
-        UserDto emptyEmailUser = UserTestGenerator.getEmptyEmailUser();
-        Set<ConstraintViolation<UserDto>> emptyViolations = validator.validate(emptyEmailUser);
-        assertEquals(emptyViolations.size(), 1);
+        RequestAddUserDto emptyEmailUser = UserTestGenerator.getEmptyEmailUser();
+        Set<ConstraintViolation<RequestAddUserDto>> emptyViolations = validator.validate(emptyEmailUser);
+        assertEquals(1, emptyViolations.size());
     }
 
     @Test
     void requestUserEmailShouldBeValidEmail() {
-        UserDto invalidEmailUser = UserTestGenerator.getInvalidEmailUser();
-        Set<ConstraintViolation<UserDto>> emailViolations = validator.validate(invalidEmailUser);
-        assertEquals(emailViolations.size(), 1);
+        RequestAddUserDto invalidEmailUser = UserTestGenerator.getInvalidEmailUser();
+        Set<ConstraintViolation<RequestAddUserDto>> emailViolations = validator.validate(invalidEmailUser);
+        assertEquals(1, emailViolations.size());
     }
 
     @Test
     void testValidItem() {
-        ItemDto validItem = ItemTestGenerator.getItem();
-        Set<ConstraintViolation<ItemDto>> validViolations = validator.validate(validItem);
-        assertEquals(validViolations.size(), 0);
+        RequestAddItemDto validItem = ItemTestGenerator.getItem();
+        Set<ConstraintViolation<RequestAddItemDto>> validViolations = validator.validate(validItem);
+        assertEquals(0, validViolations.size());
     }
 
     @Test
     void requestItemNameShouldNotBeBlank() {
-        ItemDto nullNameItem = ItemTestGenerator.getNullNameItem();
-        Set<ConstraintViolation<ItemDto>> nullViolations = validator.validate(nullNameItem);
-        assertEquals(nullViolations.size(), 1);
+        RequestAddItemDto nullNameItem = ItemTestGenerator.getNullNameItem();
+        Set<ConstraintViolation<RequestAddItemDto>> nullViolations = validator.validate(nullNameItem);
+        assertEquals(1, nullViolations.size());
 
-        ItemDto emptyNameItem = ItemTestGenerator.getEmptyNameItem();
-        Set<ConstraintViolation<ItemDto>> emptyViolations = validator.validate(emptyNameItem);
-        assertEquals(emptyViolations.size(), 1);
+        RequestAddItemDto emptyNameItem = ItemTestGenerator.getEmptyNameItem();
+        Set<ConstraintViolation<RequestAddItemDto>> emptyViolations = validator.validate(emptyNameItem);
+        assertEquals(1, emptyViolations.size());
     }
 
     @Test
     void requestItemDescriptionShouldNotBeBlank() {
-        ItemDto nullDescriptionItem = ItemTestGenerator.getNullDescriptionIItem();
-        Set<ConstraintViolation<ItemDto>> nullViolations = validator.validate(nullDescriptionItem);
-        assertEquals(nullViolations.size(), 1);
+        RequestAddItemDto nullDescriptionItem = ItemTestGenerator.getNullDescriptionIItem();
+        Set<ConstraintViolation<RequestAddItemDto>> nullViolations = validator.validate(nullDescriptionItem);
+        assertEquals(1, nullViolations.size());
 
-        ItemDto emptyDescriptionItem = ItemTestGenerator.getEmptyDescriptionItem();
-        Set<ConstraintViolation<ItemDto>> emptyViolations = validator.validate(emptyDescriptionItem);
-        assertEquals(emptyViolations.size(), 1);
+        RequestAddItemDto emptyDescriptionItem = ItemTestGenerator.getEmptyDescriptionItem();
+        Set<ConstraintViolation<RequestAddItemDto>> emptyViolations = validator.validate(emptyDescriptionItem);
+        assertEquals(1, emptyViolations.size());
     }
 
     @Test
     void requestItemAvailabilityShouldBeNull() {
-        ItemDto nullAvailabilityItem = ItemTestGenerator.getNullAvailabilityItem();
-        Set<ConstraintViolation<ItemDto>> availabilityViolations = validator.validate(nullAvailabilityItem);
-        assertEquals(availabilityViolations.size(), 1);
+        RequestAddItemDto nullAvailabilityItem = ItemTestGenerator.getNullAvailabilityItem();
+        Set<ConstraintViolation<RequestAddItemDto>> availabilityViolations = validator.validate(nullAvailabilityItem);
+        assertEquals(1, availabilityViolations.size());
     }
 }

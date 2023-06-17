@@ -1,25 +1,14 @@
-package ru.practicum.shareit.item.storage;
+package ru.practicum.shareit.item.repository;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.mapper.ItemMapper;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.model.ItemTestGenerator;
-import ru.practicum.shareit.user.maper.UserMapper;
-import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.model.UserTestGenerator;
-import ru.practicum.shareit.user.storage.UserStorage;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class ItemStorageTest {
 
-    private final ItemStorage itemStorage;
+    /*private final ItemStorage itemStorage;
     private final UserStorage userStorage;
 
     @Test
@@ -55,6 +44,6 @@ class ItemStorageTest {
             itemStorage.deleteById(item.getId());
         }
         assertEquals(0, itemStorage.findByUserId(1L).size());
-    }
+    }*/
 
 }

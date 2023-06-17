@@ -1,50 +1,50 @@
 package ru.practicum.shareit.user.model;
 
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.RequestAddUserDto;
 
 public class UserTestGenerator {
-    public static UserDto getNullNameUser() {
-        return new UserDto(
+    public static RequestAddUserDto getNullNameUser() {
+        return new RequestAddUserDto(
                 0L,
                 null,
                 "user@test.com"
         );
     }
 
-    public static UserDto getEmptyNameUser() {
-        return new UserDto(
+    public static RequestAddUserDto getEmptyNameUser() {
+        return new RequestAddUserDto(
                 0L,
                 "",
                 "user@test.com"
         );
     }
 
-    public static UserDto getNullEmailUser() {
-        return new UserDto(
+    public static RequestAddUserDto getNullEmailUser() {
+        return new RequestAddUserDto(
                 0L,
                 "user",
                 null
         );
     }
 
-    public static UserDto getEmptyEmailUser() {
-        return new UserDto(
+    public static RequestAddUserDto getEmptyEmailUser() {
+        return new RequestAddUserDto(
                 0L,
                 "user",
                 ""
         );
     }
 
-    public static UserDto getInvalidEmailUser() {
-        return new UserDto(
+    public static RequestAddUserDto getInvalidEmailUser() {
+        return new RequestAddUserDto(
                 0L,
                 "user",
                 "rrrrrrrr@"
         );
     }
 
-    public static UserDto getUser() {
-        return new UserDto(
+    public static RequestAddUserDto getUser() {
+        return new RequestAddUserDto(
                 0L,
                 "user",
                 "user@test.com"

@@ -1,10 +1,10 @@
 package ru.practicum.shareit.item.model;
 
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.RequestAddItemDto;
 
 public class ItemTestGenerator {
-    public static ItemDto getNullNameItem() {
-        return new ItemDto(
+    public static RequestAddItemDto getNullNameItem() {
+        return new RequestAddItemDto(
                 0L,
                 null,
                 "description",
@@ -14,8 +14,8 @@ public class ItemTestGenerator {
         );
     }
 
-    public static ItemDto getEmptyNameItem() {
-        return new ItemDto(
+    public static RequestAddItemDto getEmptyNameItem() {
+        return new RequestAddItemDto(
                 0L,
                 "",
                 "description",
@@ -25,8 +25,8 @@ public class ItemTestGenerator {
         );
     }
 
-    public static ItemDto getNullDescriptionIItem() {
-        return new ItemDto(
+    public static RequestAddItemDto getNullDescriptionIItem() {
+        return new RequestAddItemDto(
                 0L,
                 "item",
                 null,
@@ -36,8 +36,8 @@ public class ItemTestGenerator {
         );
     }
 
-    public static ItemDto getEmptyDescriptionItem() {
-        return new ItemDto(
+    public static RequestAddItemDto getEmptyDescriptionItem() {
+        return new RequestAddItemDto(
                 0L,
                 "item",
                 "",
@@ -47,8 +47,8 @@ public class ItemTestGenerator {
         );
     }
 
-    public static ItemDto getNullAvailabilityItem() {
-        return new ItemDto(
+    public static RequestAddItemDto getNullAvailabilityItem() {
+        return new RequestAddItemDto(
                 0L,
                 "item",
                 "description",
@@ -58,8 +58,8 @@ public class ItemTestGenerator {
         );
     }
 
-    public static ItemDto getItem() {
-        return new ItemDto(
+    public static RequestAddItemDto getItem() {
+        return new RequestAddItemDto(
                 0L,
                 "item",
                 "description",
