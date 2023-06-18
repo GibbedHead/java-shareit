@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RequestAddItemDto {
-    Long id;
     @NotBlank(message = "Item name must not be blank")
     String name;
     @NotBlank(message = "Item description must not be blank")

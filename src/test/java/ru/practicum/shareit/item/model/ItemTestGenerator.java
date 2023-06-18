@@ -5,7 +5,6 @@ import ru.practicum.shareit.item.dto.RequestAddItemDto;
 public class ItemTestGenerator {
     public static RequestAddItemDto getNullNameItem() {
         return new RequestAddItemDto(
-                0L,
                 null,
                 "description",
                 true,
@@ -16,7 +15,6 @@ public class ItemTestGenerator {
 
     public static RequestAddItemDto getEmptyNameItem() {
         return new RequestAddItemDto(
-                0L,
                 "",
                 "description",
                 true,
@@ -27,7 +25,6 @@ public class ItemTestGenerator {
 
     public static RequestAddItemDto getNullDescriptionIItem() {
         return new RequestAddItemDto(
-                0L,
                 "item",
                 null,
                 true,
@@ -38,7 +35,6 @@ public class ItemTestGenerator {
 
     public static RequestAddItemDto getEmptyDescriptionItem() {
         return new RequestAddItemDto(
-                0L,
                 "item",
                 "",
                 true,
@@ -49,7 +45,6 @@ public class ItemTestGenerator {
 
     public static RequestAddItemDto getNullAvailabilityItem() {
         return new RequestAddItemDto(
-                0L,
                 "item",
                 "description",
                 null,
@@ -60,7 +55,6 @@ public class ItemTestGenerator {
 
     public static RequestAddItemDto getItem() {
         return new RequestAddItemDto(
-                0L,
                 "item",
                 "description",
                 true,

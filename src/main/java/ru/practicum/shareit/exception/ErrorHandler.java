@@ -8,6 +8,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.practicum.shareit.exception.booking.BookingDateException;
+import ru.practicum.shareit.exception.booking.BookingItemNotAvailableException;
 import ru.practicum.shareit.exception.model.AccessException;
 import ru.practicum.shareit.exception.model.EntityNotFoundException;
 import ru.practicum.shareit.exception.model.ErrorResponse;
@@ -39,6 +41,22 @@ public class ErrorHandler {
     @ExceptionHandler(AccessException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponse handleAccessException(final Exception e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
+
+    @ExceptionHandler(BookingDateException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBookingDateException(final Exception e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
+
+    @ExceptionHandler(BookingItemNotAvailableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBookingItemNotAvailableException(final Exception e) {
         return new ErrorResponse(
                 e.getMessage()
         );
