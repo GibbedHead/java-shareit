@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.booking.dto.ResponseBookingInItemDto;
 
 @Getter
 @Setter
@@ -13,4 +14,6 @@ public class ResponseItemDto {
     String name;
     String description;
     Boolean available;
+    ResponseBookingInItemDto lastBooking;
+    ResponseBookingInItemDto nextBooking;
 }

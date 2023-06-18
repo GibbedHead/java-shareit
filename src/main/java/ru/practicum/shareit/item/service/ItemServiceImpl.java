@@ -5,6 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.mapper.BookingMapper;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.booking.status.BookingStatus;
 import ru.practicum.shareit.exception.model.AccessException;
 import ru.practicum.shareit.exception.model.ItemNotFoundException;
 import ru.practicum.shareit.exception.model.UserNotFoundException;
@@ -16,6 +20,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -28,11 +33,12 @@ public class ItemServiceImpl implements ItemService {
 
     private static final String ITEM_NOT_FOUND_MESSAGE = "Item id=%d not found";
     private static final String USER_NOT_FOUND_MESSAGE = "User id=%d not found";
-    private static final String REQUEST_NOT_FOUND_MESSAGE = "Request id=%d not found";
 
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
     private final ItemMapper itemMapper = Mappers.getMapper(ItemMapper.class);
+    private final BookingMapper bookingMapper = Mappers.getMapper(BookingMapper.class);
 
     @Override
     public ResponseItemDto save(Long userId, RequestAddItemDto itemDto) {
@@ -55,7 +61,7 @@ public class ItemServiceImpl implements ItemService {
             log.error(String.format(ITEM_NOT_FOUND_MESSAGE, itemId));
             throw new ItemNotFoundException(String.format(ITEM_NOT_FOUND_MESSAGE, itemId));
         }
-        return itemMapper.itemToResponseDto(itemOptional.get());
+        return addBookingsToResponseDto(itemMapper.itemToResponseDto(itemOptional.get()));
     }
 
     @Override
@@ -104,4 +110,24 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
     }
 
+    private ResponseItemDto addBookingsToResponseDto(ResponseItemDto dto) {
+        LocalDateTime currentTime = LocalDateTime.now();
+        List<Booking> lastBooking = bookingRepository.findFirst1ByItem_IdAndEndLessThanAndStatusOrderByEndDesc(
+                dto.getId(),
+                currentTime,
+                BookingStatus.APPROVED
+        );
+        List<Booking> nextBooking = bookingRepository.findFirst1ByItem_IdAndStartGreaterThanAndStatusOrderByStartAsc(
+                dto.getId(),
+                currentTime,
+                BookingStatus.APPROVED
+        );
+        if (!lastBooking.isEmpty()) {
+            dto.setLastBooking(bookingMapper.bookingToItemResponse(lastBooking.get(0)));
+        }
+        if (!nextBooking.isEmpty()) {
+            dto.setNextBooking(bookingMapper.bookingToItemResponse(nextBooking.get(0)));
+        }
+        return dto;
+    }
 }
