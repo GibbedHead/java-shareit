@@ -8,8 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.exception.booking.BookingDateException;
-import ru.practicum.shareit.exception.booking.BookingItemNotAvailableException;
+import ru.practicum.shareit.exception.booking.*;
 import ru.practicum.shareit.exception.model.AccessException;
 import ru.practicum.shareit.exception.model.EntityNotFoundException;
 import ru.practicum.shareit.exception.model.ErrorResponse;
@@ -57,6 +56,46 @@ public class ErrorHandler {
     @ExceptionHandler(BookingItemNotAvailableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBookingItemNotAvailableException(final Exception e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
+
+    @ExceptionHandler(BookingNotOwnerOperationException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleBookingNotOwnerOperationException(final Exception e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
+
+    @ExceptionHandler(BookingApprovingOwnBookingException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleBookingApprovingOwnBookingException(final Exception e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
+
+    @ExceptionHandler(BookingOwnItemException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleBookingOwnItemException(final Exception e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
+
+    @ExceptionHandler(BookingAlreadyApprovedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBookingAlreadyApprovedException(final Exception e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
+
+    @ExceptionHandler(BookingUnsupportedStateException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBookingUnsupportedStateException(final Exception e) {
         return new ErrorResponse(
                 e.getMessage()
         );
