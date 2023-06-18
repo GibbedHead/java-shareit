@@ -9,7 +9,7 @@ import java.util.List;
 public interface ItemService {
     ResponseItemDto save(Long userId, RequestAddItemDto itemDto);
 
-    ResponseItemDto findById(Long id);
+    ResponseItemDto findById(Long userId, Long id);
 
     List<ResponseItemDto> findByUserId(Long userId);
 

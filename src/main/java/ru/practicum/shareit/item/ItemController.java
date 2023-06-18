@@ -42,9 +42,11 @@ public class ItemController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseItemDto findById(@PathVariable Long id) {
+    public ResponseItemDto findById(
+            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @PathVariable Long id) {
         log.info("Get item request id " + id);
-        return itemService.findById(id);
+        return itemService.findById(userId, id);
     }
 
     @GetMapping

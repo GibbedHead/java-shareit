@@ -55,19 +55,24 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ResponseItemDto findById(Long itemId) {
+    public ResponseItemDto findById(Long userId, Long itemId) {
         Optional<Item> itemOptional = itemRepository.findById(itemId);
         if (itemOptional.isEmpty()) {
             log.error(String.format(ITEM_NOT_FOUND_MESSAGE, itemId));
             throw new ItemNotFoundException(String.format(ITEM_NOT_FOUND_MESSAGE, itemId));
         }
-        return addBookingsToResponseDto(itemMapper.itemToResponseDto(itemOptional.get()));
+        ResponseItemDto dto = itemMapper.itemToResponseDto(itemOptional.get());
+        if (Objects.equals(userId, itemOptional.get().getOwnerId())) {
+            addBookingsToResponseDto(dto);
+        }
+        return dto;
     }
 
     @Override
     public List<ResponseItemDto> findByUserId(Long userId) {
-        return itemRepository.findAllByOwnerId(userId).stream()
+        return itemRepository.findByOwnerIdOrderByIdAsc(userId).stream()
                 .map(itemMapper::itemToResponseDto)
+                .map(this::addBookingsToResponseDto)
                 .collect(Collectors.toList());
     }
 
