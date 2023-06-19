@@ -33,18 +33,18 @@ class ItemRepositoryTest {
     @Test
     void add() {
         User user = userRepository.save(userMapper.addDtoToUser(UserTestGenerator.getUser1()));
-        RequestAddItemDto RequestAddItemDto = ItemTestGenerator.getItem();
-        RequestAddItemDto.setOwnerId(user.getId());
-        Item item = itemRepository.save(itemMapper.addDtoToItem(RequestAddItemDto));
+        RequestAddItemDto requestAddItemDto = ItemTestGenerator.getItem();
+        requestAddItemDto.setOwnerId(user.getId());
+        Item item = itemRepository.save(itemMapper.addDtoToItem(requestAddItemDto));
         assertEquals("item", item.getName());
     }
 
     @Test
     void update() {
         User user = userRepository.save(userMapper.addDtoToUser(UserTestGenerator.getUser1()));
-        RequestAddItemDto RequestAddItemDto = ItemTestGenerator.getItem();
-        RequestAddItemDto.setOwnerId(user.getId());
-        Item item = itemRepository.save(itemMapper.addDtoToItem(RequestAddItemDto));
+        RequestAddItemDto requestAddItemDto = ItemTestGenerator.getItem();
+        requestAddItemDto.setOwnerId(user.getId());
+        Item item = itemRepository.save(itemMapper.addDtoToItem(requestAddItemDto));
         item.setName("updated");
         Item updatedItem = itemRepository.save(item);
         assertEquals("updated", item.getName());
@@ -53,12 +53,12 @@ class ItemRepositoryTest {
     @Test
     void delete() {
         User user = userRepository.save(userMapper.addDtoToUser(UserTestGenerator.getUser1()));
-        RequestAddItemDto RequestAddItemDto1 = ItemTestGenerator.getItem();
-        RequestAddItemDto1.setOwnerId(user.getId());
-        RequestAddItemDto RequestAddItemDto2 = ItemTestGenerator.getItem();
-        RequestAddItemDto2.setOwnerId(user.getId());
-        Item item1 = itemRepository.save(itemMapper.addDtoToItem(RequestAddItemDto1));
-        Item item2 = itemRepository.save(itemMapper.addDtoToItem(RequestAddItemDto2));
+        RequestAddItemDto requestAddItemDto = ItemTestGenerator.getItem();
+        requestAddItemDto.setOwnerId(user.getId());
+        RequestAddItemDto requestAddItemDto2 = ItemTestGenerator.getItem();
+        requestAddItemDto2.setOwnerId(user.getId());
+        Item item1 = itemRepository.save(itemMapper.addDtoToItem(requestAddItemDto));
+        Item item2 = itemRepository.save(itemMapper.addDtoToItem(requestAddItemDto2));
         for (Item item : itemRepository.findByOwnerIdOrderByIdAsc(1L)) {
             itemRepository.deleteById(item.getId());
         }
