@@ -75,4 +75,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             LocalDateTime currentTime,
             BookingStatus status
     );
+
+    List<Booking> findFirst1ByItem_IdAndBooker_IdAndStatusAndEndBefore(
+            Long itemId,
+            Long userId,
+            BookingStatus status,
+            LocalDateTime currentTime
+    );
 }

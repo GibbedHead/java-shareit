@@ -9,7 +9,8 @@ import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.status.BookingStatus;
-import ru.practicum.shareit.exception.model.AccessException;
+import ru.practicum.shareit.exception.model.AccessBadRequestException;
+import ru.practicum.shareit.exception.model.AccessNotFoundException;
 import ru.practicum.shareit.exception.model.ItemNotFoundException;
 import ru.practicum.shareit.exception.model.UserNotFoundException;
 import ru.practicum.shareit.item.dto.*;
@@ -35,6 +36,7 @@ public class ItemServiceImpl implements ItemService {
 
     private static final String ITEM_NOT_FOUND_MESSAGE = "Item id=%d not found";
     private static final String USER_NOT_FOUND_MESSAGE = "User id=%d not found";
+    private static final String NOT_ITEM_BOOKER_ALREADY_MESSAGE = "User id=%d not already booked itemId=%d";
 
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
@@ -89,7 +91,7 @@ public class ItemServiceImpl implements ItemService {
         }
         if (!Objects.equals(userId, itemOptional.get().getOwnerId())) {
             log.error("Wrong user id");
-            throw new AccessException("Wrong user id");
+            throw new AccessNotFoundException("Wrong user id");
         }
         itemMapper.updateItemFromRequestUpdateDto(itemDto, itemOptional.get());
         return itemMapper.itemToResponseDto(
@@ -121,6 +123,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ResponseCommentDto saveComment(Long userId, Long itemId, RequestAddCommentDto addCommentDto) {
+        if (isUserNotAlreadyItemBooker(userId, itemId)) {
+            log.error(String.format(NOT_ITEM_BOOKER_ALREADY_MESSAGE, userId, itemId));
+            throw new AccessBadRequestException(String.format(NOT_ITEM_BOOKER_ALREADY_MESSAGE, userId, itemId));
+        }
         User user = getUserOrThrowException(userId);
         Item item = getItemOrThrowException(itemId);
         Comment comment = commentMapper.addDtoToComment(addCommentDto);
@@ -130,6 +136,16 @@ public class ItemServiceImpl implements ItemService {
         return commentMapper.commentToResponseDto(
                 commentRepository.save(comment)
         );
+    }
+
+    private boolean isUserNotAlreadyItemBooker(Long userId, Long itemId) {
+        List<Booking> pastBookings = bookingRepository.findFirst1ByItem_IdAndBooker_IdAndStatusAndEndBefore(
+                itemId,
+                userId,
+                BookingStatus.APPROVED,
+                LocalDateTime.now()
+        );
+        return pastBookings.isEmpty();
     }
 
     private ResponseItemDto addBookingsToResponseDto(ResponseItemDto dto) {
