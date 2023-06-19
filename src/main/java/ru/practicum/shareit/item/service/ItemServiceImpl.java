@@ -61,24 +61,26 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ResponseItemDto findById(Long userId, Long itemId) {
+    public ResponseItemWithCommentsDto findById(Long userId, Long itemId) {
         Optional<Item> itemOptional = itemRepository.findById(itemId);
         if (itemOptional.isEmpty()) {
             log.error(String.format(ITEM_NOT_FOUND_MESSAGE, itemId));
             throw new ItemNotFoundException(String.format(ITEM_NOT_FOUND_MESSAGE, itemId));
         }
-        ResponseItemDto dto = itemMapper.itemToResponseDto(itemOptional.get());
+        ResponseItemWithCommentsDto dto = itemMapper.itemToResponseWithCommentDto(itemOptional.get());
         if (Objects.equals(userId, itemOptional.get().getOwnerId())) {
-            addBookingsToResponseDto(dto);
+            addBookingsToResponseWithCommentDto(dto);
         }
+        addCommentsResponseWithComment(dto);
         return dto;
     }
 
     @Override
-    public List<ResponseItemDto> findByUserId(Long userId) {
+    public List<ResponseItemWithCommentsDto> findByUserId(Long userId) {
         return itemRepository.findByOwnerIdOrderByIdAsc(userId).stream()
-                .map(itemMapper::itemToResponseDto)
-                .map(this::addBookingsToResponseDto)
+                .map(itemMapper::itemToResponseWithCommentDto)
+                .map(this::addBookingsToResponseWithCommentDto)
+                .map(this::addCommentsResponseWithComment)
                 .collect(Collectors.toList());
     }
 
@@ -138,6 +140,15 @@ public class ItemServiceImpl implements ItemService {
         );
     }
 
+    private ResponseItemWithCommentsDto addCommentsResponseWithComment(ResponseItemWithCommentsDto dto) {
+        dto.setComments(
+                commentRepository.findByItem_Id(dto.getId()).stream()
+                        .map(commentMapper::commentToResponseDto)
+                        .collect(Collectors.toList())
+        );
+        return dto;
+    }
+
     private boolean isUserNotAlreadyItemBooker(Long userId, Long itemId) {
         List<Booking> pastBookings = bookingRepository.findFirst1ByItem_IdAndBooker_IdAndStatusAndEndBefore(
                 itemId,
@@ -148,7 +159,7 @@ public class ItemServiceImpl implements ItemService {
         return pastBookings.isEmpty();
     }
 
-    private ResponseItemDto addBookingsToResponseDto(ResponseItemDto dto) {
+    private ResponseItemWithCommentsDto addBookingsToResponseWithCommentDto(ResponseItemWithCommentsDto dto) {
         LocalDateTime currentTime = LocalDateTime.now();
         List<Booking> lastBooking = bookingRepository.findFirst1ByItem_IdAndEndLessThanAndStatusOrderByEndDesc(
                 dto.getId(),

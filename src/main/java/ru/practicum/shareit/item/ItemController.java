@@ -40,7 +40,7 @@ public class ItemController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseItemDto findById(
+    public ResponseItemWithCommentsDto findById(
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @PathVariable Long id) {
         log.info("Get item request id " + id);
@@ -49,7 +49,7 @@ public class ItemController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ResponseItemDto> findByUserId(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ResponseItemWithCommentsDto> findByUserId(@RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Get items request by userId " + userId);
         return itemService.findByUserId(userId);
     }

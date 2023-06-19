@@ -7,9 +7,9 @@ import java.util.List;
 public interface ItemService {
     ResponseItemDto save(Long userId, RequestAddItemDto itemDto);
 
-    ResponseItemDto findById(Long userId, Long id);
+    ResponseItemWithCommentsDto findById(Long userId, Long id);
 
-    List<ResponseItemDto> findByUserId(Long userId);
+    List<ResponseItemWithCommentsDto> findByUserId(Long userId);
 
     ResponseItemDto update(Long userId, Long itemId, RequestUpdateItemDto itemUpdateDto);
 
