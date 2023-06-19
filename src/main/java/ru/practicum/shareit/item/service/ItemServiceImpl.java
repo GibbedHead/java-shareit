@@ -161,7 +161,7 @@ public class ItemServiceImpl implements ItemService {
 
     private ResponseItemWithCommentsDto addBookingsToResponseWithCommentDto(ResponseItemWithCommentsDto dto) {
         LocalDateTime currentTime = LocalDateTime.now();
-        List<Booking> lastBooking = bookingRepository.findFirst1ByItem_IdAndEndLessThanAndStatusOrderByEndDesc(
+        List<Booking> lastBooking = bookingRepository.findFirst1ByItem_IdAndStartLessThanAndStatusOrderByEndDesc(
                 dto.getId(),
                 currentTime,
                 BookingStatus.APPROVED

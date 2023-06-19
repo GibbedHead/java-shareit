@@ -116,21 +116,21 @@ public class BookingServiceImpl implements BookingService {
     private List<Booking> getBookingsByUserIdAndState(Long userId, BookingState state) {
         switch (state) {
             case ALL:
-                return bookingRepository.findByBooker_IdOrderByStartDesc(userId);
+                return bookingRepository.findByBooker_IdOrderByEndDesc(userId);
             case CURRENT:
-                return bookingRepository.findByBooker_IdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(
+                return bookingRepository.findByBooker_IdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(
                         userId,
                         LocalDateTime.now(),
                         LocalDateTime.now()
                 );
             case PAST:
-                return bookingRepository.findByBooker_IdAndEndIsBeforeOrderByStartDesc(userId, LocalDateTime.now());
+                return bookingRepository.findByBooker_IdAndEndIsBeforeOrderByEndDesc(userId, LocalDateTime.now());
             case FUTURE:
-                return bookingRepository.findByBooker_IdAndStartIsAfterOrderByStartDesc(userId, LocalDateTime.now());
+                return bookingRepository.findByBooker_IdAndStartIsAfterOrderByEndDesc(userId, LocalDateTime.now());
             case WAITING:
-                return bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING);
+                return bookingRepository.findByBooker_IdAndStatusOrderByEndDesc(userId, BookingStatus.WAITING);
             case REJECTED:
-                return bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED);
+                return bookingRepository.findByBooker_IdAndStatusOrderByEndDesc(userId, BookingStatus.REJECTED);
             default:
                 return List.of();
         }
