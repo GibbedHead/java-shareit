@@ -50,6 +50,7 @@ CREATE TABLE public.comments (
 	text varchar NOT NULL,
 	item_id bigint NOT NULL,
 	author_id bigint NOT NULL,
+	created timestamp without time zone NOT NULL,
 	CONSTRAINT comments_pk PRIMARY KEY (id),
 	CONSTRAINT comments_items_fk FOREIGN KEY (item_id) REFERENCES public.items(id) ON DELETE CASCADE,
 	CONSTRAINT comments_users_fk FOREIGN KEY (author_id) REFERENCES public.users(id) ON DELETE CASCADE

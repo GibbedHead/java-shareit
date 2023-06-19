@@ -12,12 +12,14 @@ import ru.practicum.shareit.booking.status.BookingStatus;
 import ru.practicum.shareit.exception.model.AccessException;
 import ru.practicum.shareit.exception.model.ItemNotFoundException;
 import ru.practicum.shareit.exception.model.UserNotFoundException;
-import ru.practicum.shareit.item.dto.RequestAddItemDto;
-import ru.practicum.shareit.item.dto.RequestUpdateItemDto;
-import ru.practicum.shareit.item.dto.ResponseItemDto;
+import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
@@ -37,8 +39,10 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
     private final ItemMapper itemMapper = Mappers.getMapper(ItemMapper.class);
     private final BookingMapper bookingMapper = Mappers.getMapper(BookingMapper.class);
+    private final CommentMapper commentMapper = Mappers.getMapper(CommentMapper.class);
 
     @Override
     public ResponseItemDto save(Long userId, RequestAddItemDto itemDto) {
@@ -115,6 +119,19 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public ResponseCommentDto saveComment(Long userId, Long itemId, RequestAddCommentDto addCommentDto) {
+        User user = getUserOrThrowException(userId);
+        Item item = getItemOrThrowException(itemId);
+        Comment comment = commentMapper.addDtoToComment(addCommentDto);
+        comment.setAuthor(user);
+        comment.setItem(item);
+        comment.setCreated(LocalDateTime.now());
+        return commentMapper.commentToResponseDto(
+                commentRepository.save(comment)
+        );
+    }
+
     private ResponseItemDto addBookingsToResponseDto(ResponseItemDto dto) {
         LocalDateTime currentTime = LocalDateTime.now();
         List<Booking> lastBooking = bookingRepository.findFirst1ByItem_IdAndEndLessThanAndStatusOrderByEndDesc(
@@ -134,5 +151,23 @@ public class ItemServiceImpl implements ItemService {
             dto.setNextBooking(bookingMapper.bookingToItemResponse(nextBooking.get(0)));
         }
         return dto;
+    }
+
+    private User getUserOrThrowException(Long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isEmpty()) {
+            log.error(String.format(USER_NOT_FOUND_MESSAGE, userId));
+            throw new UserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, userId));
+        }
+        return userOptional.get();
+    }
+
+    private Item getItemOrThrowException(Long itemId) {
+        Optional<Item> itemOptional = itemRepository.findById(itemId);
+        if (itemOptional.isEmpty()) {
+            log.error(String.format(ITEM_NOT_FOUND_MESSAGE, itemId));
+            throw new ItemNotFoundException(String.format(ITEM_NOT_FOUND_MESSAGE, itemId));
+        }
+        return itemOptional.get();
     }
 }

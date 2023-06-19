@@ -9,7 +9,7 @@ import ru.practicum.shareit.item.dto.RequestUpdateItemDto;
 import ru.practicum.shareit.item.dto.ResponseItemDto;
 import ru.practicum.shareit.item.model.Item;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface ItemMapper {
     Item addDtoToItem(RequestAddItemDto itemDto);
 
