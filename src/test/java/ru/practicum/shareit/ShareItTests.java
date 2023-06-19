@@ -2,7 +2,11 @@ package ru.practicum.shareit;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.practicum.shareit.booking.dto.RequestAddBookingDto;
+import ru.practicum.shareit.booking.model.BookingTestGenerator;
+import ru.practicum.shareit.item.dto.RequestAddCommentDto;
 import ru.practicum.shareit.item.dto.RequestAddItemDto;
+import ru.practicum.shareit.item.model.CommentTestGenerator;
 import ru.practicum.shareit.item.model.ItemTestGenerator;
 import ru.practicum.shareit.user.dto.RequestAddUserDto;
 import ru.practicum.shareit.user.model.UserTestGenerator;
@@ -88,6 +92,70 @@ class ShareItTests {
     void requestItemAvailabilityShouldBeNull() {
         RequestAddItemDto nullAvailabilityItem = ItemTestGenerator.getNullAvailabilityItem();
         Set<ConstraintViolation<RequestAddItemDto>> availabilityViolations = validator.validate(nullAvailabilityItem);
+        assertEquals(1, availabilityViolations.size());
+    }
+
+    @Test
+    void bookingValidAdd() {
+        RequestAddBookingDto requestAddBookingDto = BookingTestGenerator.getRequestAddBookingDto();
+        Set<ConstraintViolation<RequestAddBookingDto>> availabilityViolations = validator.validate(requestAddBookingDto);
+        assertEquals(0, availabilityViolations.size());
+
+    }
+
+    @Test
+    void bookingAddItemIdShouldNotBeNull() {
+        RequestAddBookingDto requestAddBookingDto = BookingTestGenerator.getRequestAddBookingNullItemIdDto();
+        Set<ConstraintViolation<RequestAddBookingDto>> availabilityViolations = validator.validate(requestAddBookingDto);
+        assertEquals(1, availabilityViolations.size());
+    }
+
+    @Test
+    void bookingAddStartShouldNotBeNull() {
+        RequestAddBookingDto requestAddBookingDto = BookingTestGenerator.getRequestAddBookingNullStartIdDto();
+        Set<ConstraintViolation<RequestAddBookingDto>> availabilityViolations = validator.validate(requestAddBookingDto);
+        assertEquals(1, availabilityViolations.size());
+    }
+
+    @Test
+    void bookingAddEndShouldNotBeNull() {
+        RequestAddBookingDto requestAddBookingDto = BookingTestGenerator.getRequestAddBookingNullEndDto();
+        Set<ConstraintViolation<RequestAddBookingDto>> availabilityViolations = validator.validate(requestAddBookingDto);
+        assertEquals(1, availabilityViolations.size());
+    }
+
+    @Test
+    void bookingAddEndShouldBeInFuture() {
+        RequestAddBookingDto requestAddBookingDto = BookingTestGenerator.getRequestAddBookingPastEndDto();
+        Set<ConstraintViolation<RequestAddBookingDto>> availabilityViolations = validator.validate(requestAddBookingDto);
+        assertEquals(1, availabilityViolations.size());
+    }
+
+    @Test
+    void bookingAddStartShouldBeInFuture() {
+        RequestAddBookingDto requestAddBookingDto = BookingTestGenerator.getRequestAddBookingPastStartDto();
+        Set<ConstraintViolation<RequestAddBookingDto>> availabilityViolations = validator.validate(requestAddBookingDto);
+        assertEquals(1, availabilityViolations.size());
+    }
+
+    @Test
+    void commentValidAdd() {
+        RequestAddCommentDto requestAddCommentDto = CommentTestGenerator.getAddCommentDto();
+        Set<ConstraintViolation<RequestAddCommentDto>> availabilityViolations = validator.validate(requestAddCommentDto);
+        assertEquals(0, availabilityViolations.size());
+    }
+
+    @Test
+    void commentAddTestShouldNotBeNull() {
+        RequestAddCommentDto requestAddCommentDto = CommentTestGenerator.getAddCommentNullTextDto();
+        Set<ConstraintViolation<RequestAddCommentDto>> availabilityViolations = validator.validate(requestAddCommentDto);
+        assertEquals(1, availabilityViolations.size());
+    }
+
+    @Test
+    void commentAddTestShouldNotBeEmpty() {
+        RequestAddCommentDto requestAddCommentDto = CommentTestGenerator.getAddCommentEmptyTextDto();
+        Set<ConstraintViolation<RequestAddCommentDto>> availabilityViolations = validator.validate(requestAddCommentDto);
         assertEquals(1, availabilityViolations.size());
     }
 }
