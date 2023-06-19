@@ -5,7 +5,6 @@ import ru.practicum.shareit.user.dto.RequestAddUserDto;
 public class UserTestGenerator {
     public static RequestAddUserDto getNullNameUser() {
         return new RequestAddUserDto(
-                0L,
                 null,
                 "user@test.com"
         );
@@ -13,7 +12,6 @@ public class UserTestGenerator {
 
     public static RequestAddUserDto getEmptyNameUser() {
         return new RequestAddUserDto(
-                0L,
                 "",
                 "user@test.com"
         );
@@ -21,7 +19,6 @@ public class UserTestGenerator {
 
     public static RequestAddUserDto getNullEmailUser() {
         return new RequestAddUserDto(
-                0L,
                 "user",
                 null
         );
@@ -29,7 +26,6 @@ public class UserTestGenerator {
 
     public static RequestAddUserDto getEmptyEmailUser() {
         return new RequestAddUserDto(
-                0L,
                 "user",
                 ""
         );
@@ -37,17 +33,22 @@ public class UserTestGenerator {
 
     public static RequestAddUserDto getInvalidEmailUser() {
         return new RequestAddUserDto(
-                0L,
                 "user",
                 "rrrrrrrr@"
         );
     }
 
-    public static RequestAddUserDto getUser() {
+    public static RequestAddUserDto getUser1() {
         return new RequestAddUserDto(
-                0L,
-                "user",
-                "user@test.com"
+                "user1",
+                "user1@test.com"
+        );
+    }
+
+    public static RequestAddUserDto getUser2() {
+        return new RequestAddUserDto(
+                "user2",
+                "user2@test.com"
         );
     }
 }

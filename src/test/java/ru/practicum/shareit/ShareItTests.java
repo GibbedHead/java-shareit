@@ -25,7 +25,7 @@ class ShareItTests {
 
     @Test
     void testValidUser() {
-        RequestAddUserDto validUser = UserTestGenerator.getUser();
+        RequestAddUserDto validUser = UserTestGenerator.getUser1();
         Set<ConstraintViolation<RequestAddUserDto>> validViolations = validator.validate(validUser);
         assertEquals(0, validViolations.size());
     }

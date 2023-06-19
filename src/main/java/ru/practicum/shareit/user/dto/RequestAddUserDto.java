@@ -12,7 +12,6 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RequestAddUserDto {
-    Long id;
     @NotBlank(message = "User name must not be blank")
     String name;
     @NotBlank(message = "User email must not be blank")
