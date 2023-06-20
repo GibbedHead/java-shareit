@@ -1,11 +1,10 @@
 package ru.practicum.shareit.item.model;
 
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.RequestAddItemDto;
 
 public class ItemTestGenerator {
-    public static ItemDto getNullNameItem() {
-        return new ItemDto(
-                0L,
+    public static RequestAddItemDto getNullNameItem() {
+        return new RequestAddItemDto(
                 null,
                 "description",
                 true,
@@ -14,9 +13,8 @@ public class ItemTestGenerator {
         );
     }
 
-    public static ItemDto getEmptyNameItem() {
-        return new ItemDto(
-                0L,
+    public static RequestAddItemDto getEmptyNameItem() {
+        return new RequestAddItemDto(
                 "",
                 "description",
                 true,
@@ -25,9 +23,8 @@ public class ItemTestGenerator {
         );
     }
 
-    public static ItemDto getNullDescriptionIItem() {
-        return new ItemDto(
-                0L,
+    public static RequestAddItemDto getNullDescriptionIItem() {
+        return new RequestAddItemDto(
                 "item",
                 null,
                 true,
@@ -36,9 +33,8 @@ public class ItemTestGenerator {
         );
     }
 
-    public static ItemDto getEmptyDescriptionItem() {
-        return new ItemDto(
-                0L,
+    public static RequestAddItemDto getEmptyDescriptionItem() {
+        return new RequestAddItemDto(
                 "item",
                 "",
                 true,
@@ -47,9 +43,8 @@ public class ItemTestGenerator {
         );
     }
 
-    public static ItemDto getNullAvailabilityItem() {
-        return new ItemDto(
-                0L,
+    public static RequestAddItemDto getNullAvailabilityItem() {
+        return new RequestAddItemDto(
                 "item",
                 "description",
                 null,
@@ -58,9 +53,8 @@ public class ItemTestGenerator {
         );
     }
 
-    public static ItemDto getItem() {
-        return new ItemDto(
-                0L,
+    public static RequestAddItemDto getItem() {
+        return new RequestAddItemDto(
                 "item",
                 "description",
                 true,

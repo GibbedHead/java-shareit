@@ -1,33 +1,22 @@
 package ru.practicum.shareit.user.maper;
 
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.dto.UserUpdateDto;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import ru.practicum.shareit.user.dto.RequestAddUserDto;
+import ru.practicum.shareit.user.dto.RequestUpdateUserDto;
+import ru.practicum.shareit.user.dto.ResponseUserDto;
 import ru.practicum.shareit.user.model.User;
 
-public final class UserMapper {
-    public static UserDto toUserDto(User user) {
-        return new UserDto(
-                user.getId(),
-                user.getName(),
-                user.getEmail()
-        );
-    }
+@Mapper(componentModel = "spring")
+public interface UserMapper {
+    User addDtoToUser(RequestAddUserDto dto);
 
-    public static User toUser(UserDto userDto) {
-        return new User(
-                userDto.getId(),
-                userDto.getName(),
-                userDto.getEmail()
-        );
-    }
+    ResponseUserDto userToResponseDto(User user);
 
-    public static User updateUserDtoToUser(User user, UserUpdateDto userDto) {
-        if (userDto.getName() != null) {
-            user.setName(userDto.getName());
-        }
-        if (userDto.getEmail() != null) {
-            user.setEmail(userDto.getEmail());
-        }
-        return user;
-    }
+    User updateDtoToUser(RequestUpdateUserDto dto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateUserFromRequestUpdateDto(RequestUpdateUserDto dto, @MappingTarget User user);
 }

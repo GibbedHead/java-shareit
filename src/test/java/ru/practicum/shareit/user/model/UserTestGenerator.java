@@ -1,53 +1,54 @@
 package ru.practicum.shareit.user.model;
 
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.RequestAddUserDto;
 
 public class UserTestGenerator {
-    public static UserDto getNullNameUser() {
-        return new UserDto(
-                0L,
+    public static RequestAddUserDto getNullNameUser() {
+        return new RequestAddUserDto(
                 null,
                 "user@test.com"
         );
     }
 
-    public static UserDto getEmptyNameUser() {
-        return new UserDto(
-                0L,
+    public static RequestAddUserDto getEmptyNameUser() {
+        return new RequestAddUserDto(
                 "",
                 "user@test.com"
         );
     }
 
-    public static UserDto getNullEmailUser() {
-        return new UserDto(
-                0L,
+    public static RequestAddUserDto getNullEmailUser() {
+        return new RequestAddUserDto(
                 "user",
                 null
         );
     }
 
-    public static UserDto getEmptyEmailUser() {
-        return new UserDto(
-                0L,
+    public static RequestAddUserDto getEmptyEmailUser() {
+        return new RequestAddUserDto(
                 "user",
                 ""
         );
     }
 
-    public static UserDto getInvalidEmailUser() {
-        return new UserDto(
-                0L,
+    public static RequestAddUserDto getInvalidEmailUser() {
+        return new RequestAddUserDto(
                 "user",
                 "rrrrrrrr@"
         );
     }
 
-    public static UserDto getUser() {
-        return new UserDto(
-                0L,
-                "user",
-                "user@test.com"
+    public static RequestAddUserDto getUser1() {
+        return new RequestAddUserDto(
+                "user1",
+                "user1@test.com"
+        );
+    }
+
+    public static RequestAddUserDto getUser2() {
+        return new RequestAddUserDto(
+                "user2",
+                "user2@test.com"
         );
     }
 }

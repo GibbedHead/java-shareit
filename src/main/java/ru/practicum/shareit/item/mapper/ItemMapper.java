@@ -1,45 +1,25 @@
 package ru.practicum.shareit.item.mapper;
 
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemUpdateDto;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import ru.practicum.shareit.item.dto.RequestAddItemDto;
+import ru.practicum.shareit.item.dto.RequestUpdateItemDto;
+import ru.practicum.shareit.item.dto.ResponseItemDto;
+import ru.practicum.shareit.item.dto.ResponseItemWithCommentsDto;
 import ru.practicum.shareit.item.model.Item;
 
-public final class ItemMapper {
-    public static ItemDto toItemDto(Item item) {
-        return new ItemDto(
-                item.getId(),
-                item.getName(),
-                item.getDescription(),
-                item.getAvailable(),
-                item.getOwner(),
-                item.getRequest()
-        );
-    }
+@Mapper(componentModel = "spring")
+public interface ItemMapper {
+    Item addDtoToItem(RequestAddItemDto itemDto);
 
-    public static Item toItem(ItemDto itemDto) {
-        return new Item(
-                itemDto.getId(),
-                itemDto.getName(),
-                itemDto.getDescription(),
-                itemDto.getAvailable(),
-                itemDto.getOwner(),
-                itemDto.getRequest()
-        );
-    }
+    ResponseItemDto itemToResponseDto(Item item);
 
-    public static Item updateItemDtoToItem(Item item, ItemUpdateDto itemUpdateDto) {
-        if (itemUpdateDto.getName() != null) {
-            item.setName(itemUpdateDto.getName());
-        }
-        if (itemUpdateDto.getDescription() != null) {
-            item.setDescription(itemUpdateDto.getDescription());
-        }
-        if (itemUpdateDto.getAvailable() != null) {
-            item.setAvailable(itemUpdateDto.getAvailable());
-        }
-        if (itemUpdateDto.getRequest() != null) {
-            item.setRequest(itemUpdateDto.getRequest());
-        }
-        return item;
-    }
+    ResponseItemWithCommentsDto itemToResponseWithCommentDto(Item item);
+
+    Item updateDtoToItem(RequestUpdateItemDto itemDto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateItemFromRequestUpdateDto(RequestUpdateItemDto itemDto, @MappingTarget Item item);
 }

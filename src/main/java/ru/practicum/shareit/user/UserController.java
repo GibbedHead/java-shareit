@@ -4,8 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.dto.UserUpdateDto;
+import ru.practicum.shareit.user.dto.RequestAddUserDto;
+import ru.practicum.shareit.user.dto.RequestUpdateUserDto;
+import ru.practicum.shareit.user.dto.ResponseUserDto;
 import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.Valid;
@@ -20,27 +21,27 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto save(@Valid @RequestBody UserDto userDto) {
+    public ResponseUserDto save(@Valid @RequestBody RequestAddUserDto userDto) {
         log.info("Add userDto request: " + userDto);
         return userService.save(userDto);
     }
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto update(@PathVariable long id, @Valid @RequestBody UserUpdateDto userDto) {
+    public ResponseUserDto update(@PathVariable long id, @Valid @RequestBody RequestUpdateUserDto userDto) {
         log.info("Update user id " + id + ". Data: " + userDto);
         return userService.update(id, userDto);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto findById(@PathVariable Long id) {
+    public ResponseUserDto findById(@PathVariable Long id) {
         return userService.findById(id);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDto> findAll() {
+    public List<ResponseUserDto> findAll() {
         return userService.findAll();
     }
 
