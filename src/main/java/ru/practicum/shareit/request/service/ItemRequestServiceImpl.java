@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.model.UserNotFoundException;
 import ru.practicum.shareit.request.dto.RequestAddItemRequestDto;
 import ru.practicum.shareit.request.dto.ResponseItemRequestDto;
+import ru.practicum.shareit.request.dto.ResponseItemRequestWithItemsDto;
 import ru.practicum.shareit.request.mapper.ItemRequestMapper;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
@@ -14,6 +15,8 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,5 +44,13 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return itemRequestMapper.itemRequestToResponseDto(
                 itemRequestRepository.save(itemRequest)
         );
+    }
+
+    @Override
+    public List<ResponseItemRequestWithItemsDto> findByUserId(Long userId) {
+        List<ItemRequest> requests = itemRequestRepository.findAllByRequestorId(userId);
+        return requests.stream()
+                .map(itemRequestMapper::itemRequestToResponseWithItemsDto)
+                .collect(Collectors.toList());
     }
 }
