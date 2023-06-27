@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -20,7 +21,7 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @Column(nullable = false)
+    @NotNull
     String text;
     @ManyToOne
     @JoinColumn(name = "item_id")
@@ -28,7 +29,7 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "author_id")
     User author;
-    @Column(nullable = false)
+    @NotNull
     LocalDateTime created;
 
     @Override
