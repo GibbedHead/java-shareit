@@ -18,11 +18,12 @@ import java.util.List;
 public class BookingController {
 
     private final BookingService bookingService;
+    private static final String USER_ID_HEADER_NAME = "X-Sharer-User-Id";
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseBookingDto save(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @Valid @RequestBody RequestAddBookingDto requestAddBookingDto
     ) {
         log.info("Add booking request: " + requestAddBookingDto);
@@ -32,7 +33,7 @@ public class BookingController {
     @PatchMapping("/{bookingId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBookingDto approve(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @PathVariable Long bookingId,
             @RequestParam Boolean approved
     ) {
@@ -48,7 +49,7 @@ public class BookingController {
     @GetMapping("/{bookingId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBookingDto findById(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @PathVariable Long bookingId
     ) {
         log.info(String.format("Get booking request by id=%d", bookingId));
@@ -58,7 +59,7 @@ public class BookingController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<ResponseBookingDto> findByUserId(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @RequestParam(defaultValue = "ALL") String state
     ) {
         log.info(String.format("Get bookings request by userId=%d and state=%s", userId, state));
@@ -68,7 +69,7 @@ public class BookingController {
     @GetMapping("/owner")
     @ResponseStatus(HttpStatus.OK)
     public List<ResponseBookingDto> findByItemOwner(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @RequestParam(defaultValue = "ALL") String state
     ) {
         log.info(String.format("Get bookings request by ownerId=%d and state=%s", userId, state));

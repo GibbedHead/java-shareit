@@ -16,11 +16,12 @@ import java.util.List;
 @Slf4j
 public class ItemController {
     private final ItemService itemService;
+    private static final String USER_ID_HEADER_NAME = "X-Sharer-User-Id";
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseItemDto save(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @Valid @RequestBody RequestAddItemDto itemDto
     ) {
         log.info("Add item request: " + itemDto);
@@ -30,7 +31,7 @@ public class ItemController {
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseItemDto update(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @PathVariable Long id,
             @Valid @RequestBody RequestUpdateItemDto itemUpdateDto
     ) {
@@ -41,7 +42,7 @@ public class ItemController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseItemWithCommentsDto findById(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @PathVariable Long id) {
         log.info("Get item request id " + id);
         return itemService.findById(userId, id);
@@ -49,7 +50,7 @@ public class ItemController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ResponseItemWithCommentsDto> findByUserId(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ResponseItemWithCommentsDto> findByUserId(@RequestHeader(USER_ID_HEADER_NAME) Long userId) {
         log.info("Get items request by userId " + userId);
         return itemService.findByUserId(userId);
     }
@@ -71,7 +72,7 @@ public class ItemController {
     @PostMapping("/{id}/comment")
     @ResponseStatus(HttpStatus.OK)
     public ResponseCommentDto saveComment(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @PathVariable Long id,
             @Valid @RequestBody RequestAddCommentDto addCommentDto
     ) {
