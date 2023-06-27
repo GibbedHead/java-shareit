@@ -17,8 +17,8 @@ import java.util.List;
 @Slf4j
 public class BookingController {
 
-    private final BookingService bookingService;
     private static final String USER_ID_HEADER_NAME = "X-Sharer-User-Id";
+    private final BookingService bookingService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

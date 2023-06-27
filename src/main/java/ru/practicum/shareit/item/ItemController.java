@@ -15,8 +15,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ItemController {
-    private final ItemService itemService;
     private static final String USER_ID_HEADER_NAME = "X-Sharer-User-Id";
+    private final ItemService itemService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
