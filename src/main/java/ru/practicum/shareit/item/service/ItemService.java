@@ -18,4 +18,6 @@ public interface ItemService {
     List<ResponseItemDto> findByNameOrDescription(String text);
 
     ResponseCommentDto saveComment(Long userId, Long itemId, RequestAddCommentDto addCommentDto);
+
+    List<ResponseItemForItemRequestDto> getResponseItemRequestWithItemsDtoByRequestId(Long requestId);
 }

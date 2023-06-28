@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.model.UserNotFoundException;
+import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.dto.RequestAddItemRequestDto;
 import ru.practicum.shareit.request.dto.ResponseItemRequestDto;
 import ru.practicum.shareit.request.dto.ResponseItemRequestWithItemsDto;
@@ -23,12 +24,13 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ItemRequestServiceImpl implements ItemRequestService {
 
-    private static final String ITEM_NOT_FOUND_MESSAGE = "Item id=%d not found";
+    private static final String REQUEST_NOT_FOUND_MESSAGE = "Request id=%d not found";
     private static final String USER_NOT_FOUND_MESSAGE = "User id=%d not found";
 
     private final ItemRequestRepository itemRequestRepository;
     private final UserRepository userRepository;
     private final ItemRequestMapper itemRequestMapper = Mappers.getMapper(ItemRequestMapper.class);
+    private final ItemService itemService;
 
     @Override
     public ResponseItemRequestDto save(Long userId, RequestAddItemRequestDto requestAddItemRequestDto) {
@@ -48,9 +50,19 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ResponseItemRequestWithItemsDto> findByUserId(Long userId) {
-        List<ItemRequest> requests = itemRequestRepository.findAllByRequestorId(userId);
+        if (!userRepository.existsById(userId)) {
+            log.error(String.format(USER_NOT_FOUND_MESSAGE, userId));
+            throw new UserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, userId));
+        }
+        List<ItemRequest> requests = itemRequestRepository.findAllByRequestorIdOrderByIdDesc(userId);
         return requests.stream()
                 .map(itemRequestMapper::itemRequestToResponseWithItemsDto)
+                .map(this::addItemsToResponseDto)
                 .collect(Collectors.toList());
+    }
+
+    private ResponseItemRequestWithItemsDto addItemsToResponseDto(ResponseItemRequestWithItemsDto dto) {
+        dto.setItems(itemService.getResponseItemRequestWithItemsDtoByRequestId(dto.getId()));
+        return dto;
     }
 }

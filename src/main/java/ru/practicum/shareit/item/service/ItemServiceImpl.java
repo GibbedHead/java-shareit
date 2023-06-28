@@ -140,6 +140,14 @@ public class ItemServiceImpl implements ItemService {
         );
     }
 
+    @Override
+    public List<ResponseItemForItemRequestDto> getResponseItemRequestWithItemsDtoByRequestId(Long requestId) {
+        List<Item> items = itemRepository.findAllByRequestId(requestId);
+        return items.stream()
+                .map(itemMapper::itemToResponseItemForItemRequestDto)
+                .collect(Collectors.toList());
+    }
+
     private ResponseItemWithCommentsDto addCommentsResponseWithComment(ResponseItemWithCommentsDto dto) {
         dto.setComments(
                 commentRepository.findByItem_Id(dto.getId()).stream()
