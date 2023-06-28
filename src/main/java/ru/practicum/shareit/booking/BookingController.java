@@ -3,18 +3,22 @@ package ru.practicum.shareit.booking;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.RequestAddBookingDto;
 import ru.practicum.shareit.booking.dto.ResponseBookingDto;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class BookingController {
 
     private static final String USER_ID_HEADER_NAME = "X-Sharer-User-Id";
@@ -60,19 +64,31 @@ public class BookingController {
     @ResponseStatus(HttpStatus.OK)
     public List<ResponseBookingDto> findByUserId(
             @RequestHeader(USER_ID_HEADER_NAME) Long userId,
-            @RequestParam(defaultValue = "ALL") String state
+            @RequestParam(defaultValue = "ALL") String state,
+            @RequestParam(defaultValue = "0")
+            @PositiveOrZero(message = "From parameter must be greater or equal 0")
+            Integer from,
+            @RequestParam(defaultValue = "20")
+            @Positive(message = "Size parameter must be positive")
+            Integer size
     ) {
         log.info(String.format("Get bookings request by userId=%d and state=%s", userId, state));
-        return bookingService.findByUserIdAndState(userId, state);
+        return bookingService.findByUserIdAndState(userId, state, from, size);
     }
 
     @GetMapping("/owner")
     @ResponseStatus(HttpStatus.OK)
     public List<ResponseBookingDto> findByItemOwner(
             @RequestHeader(USER_ID_HEADER_NAME) Long userId,
-            @RequestParam(defaultValue = "ALL") String state
+            @RequestParam(defaultValue = "ALL") String state,
+            @RequestParam(defaultValue = "0")
+            @PositiveOrZero(message = "From parameter must be greater or equal 0")
+            Integer from,
+            @RequestParam(defaultValue = "20")
+            @Positive(message = "Size parameter must be positive")
+            Integer size
     ) {
         log.info(String.format("Get bookings request by ownerId=%d and state=%s", userId, state));
-        return bookingService.findByItemOwner(userId, state);
+        return bookingService.findByItemOwner(userId, state, from, size);
     }
 }

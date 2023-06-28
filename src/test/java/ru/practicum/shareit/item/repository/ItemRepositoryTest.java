@@ -6,6 +6,8 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 import ru.practicum.shareit.item.dto.RequestAddItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -59,10 +61,11 @@ class ItemRepositoryTest {
         requestAddItemDto2.setOwnerId(user.getId());
         Item item1 = itemRepository.save(itemMapper.addDtoToItem(requestAddItemDto));
         Item item2 = itemRepository.save(itemMapper.addDtoToItem(requestAddItemDto2));
-        for (Item item : itemRepository.findByOwnerIdOrderByIdAsc(1L)) {
+        Pageable pageable = PageRequest.of(0, 20);
+        for (Item item : itemRepository.findByOwnerIdOrderByIdAsc(1L, pageable)) {
             itemRepository.deleteById(item.getId());
         }
-        assertEquals(0, itemRepository.findByOwnerIdOrderByIdAsc(1L).size());
+        assertEquals(0, itemRepository.findByOwnerIdOrderByIdAsc(1L, pageable).size());
     }
 
 }

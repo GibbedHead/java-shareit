@@ -3,6 +3,8 @@ package ru.practicum.shareit.booking.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.RequestAddBookingDto;
 import ru.practicum.shareit.booking.dto.ResponseBookingDto;
@@ -75,62 +77,81 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<ResponseBookingDto> findByUserIdAndState(Long userId, String state) {
+    public List<ResponseBookingDto> findByUserIdAndState(Long userId, String state, Integer from, Integer size) {
         BookingState bookingState = BookingValidator.getStateOrThrowException(state);
         getUserOrThrowException(userId);
-        List<Booking> bookings = getBookingsByUserIdAndState(userId, bookingState);
+        Pageable pageable = PageRequest.of(from / size, size);
+        List<Booking> bookings = getBookingsByUserIdAndState(userId, bookingState, pageable);
         return bookings.stream()
                 .map(bookingMapper::bookingToResponseDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<ResponseBookingDto> findByItemOwner(Long userId, String state) {
+    public List<ResponseBookingDto> findByItemOwner(Long userId, String state, Integer from, Integer size) {
         BookingState bookingState = BookingValidator.getStateOrThrowException(state);
         getUserOrThrowException(userId);
-        List<Booking> bookings = getBookingsByOwnerIdAndState(userId, bookingState);
+        Pageable pageable = PageRequest.of(from / size, size);
+        List<Booking> bookings = getBookingsByOwnerIdAndState(userId, bookingState, pageable);
         return bookings.stream()
                 .map(bookingMapper::bookingToResponseDto)
                 .collect(Collectors.toList());
     }
 
-    private List<Booking> getBookingsByOwnerIdAndState(Long userId, BookingState state) {
+    private List<Booking> getBookingsByOwnerIdAndState(Long userId, BookingState state, Pageable pageable) {
         switch (state) {
             case ALL:
-                return bookingRepository.findAllByOwner(userId);
+                return bookingRepository.findAllByOwner(userId, pageable);
             case CURRENT:
-                return bookingRepository.findAllByOwnerCurrent(userId, LocalDateTime.now());
+                return bookingRepository.findAllByOwnerCurrent(userId, LocalDateTime.now(), pageable);
             case PAST:
-                return bookingRepository.findAllByOwnerPast(userId, LocalDateTime.now());
+                return bookingRepository.findAllByOwnerPast(userId, LocalDateTime.now(), pageable);
             case FUTURE:
-                return bookingRepository.findAllByOwnerFuture(userId, LocalDateTime.now());
+                return bookingRepository.findAllByOwnerFuture(userId, LocalDateTime.now(), pageable);
             case WAITING:
-                return bookingRepository.findAllByOwnerAndStatus(userId, BookingStatus.WAITING);
+                return bookingRepository.findAllByOwnerAndStatus(userId, BookingStatus.WAITING, pageable);
             case REJECTED:
-                return bookingRepository.findAllByOwnerAndStatus(userId, BookingStatus.REJECTED);
+                return bookingRepository.findAllByOwnerAndStatus(userId, BookingStatus.REJECTED, pageable);
             default:
                 return List.of();
         }
     }
 
-    private List<Booking> getBookingsByUserIdAndState(Long userId, BookingState state) {
+    private List<Booking> getBookingsByUserIdAndState(Long userId, BookingState state, Pageable pageable) {
         switch (state) {
             case ALL:
-                return bookingRepository.findByBooker_IdOrderByEndDesc(userId);
+                return bookingRepository.findByBooker_IdOrderByEndDesc(userId, pageable);
             case CURRENT:
                 return bookingRepository.findByBooker_IdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(
                         userId,
                         LocalDateTime.now(),
-                        LocalDateTime.now()
+                        LocalDateTime.now(),
+                        pageable
                 );
             case PAST:
-                return bookingRepository.findByBooker_IdAndEndIsBeforeOrderByEndDesc(userId, LocalDateTime.now());
+                return bookingRepository.findByBooker_IdAndEndIsBeforeOrderByEndDesc(
+                        userId,
+                        LocalDateTime.now(),
+                        pageable
+                );
             case FUTURE:
-                return bookingRepository.findByBooker_IdAndStartIsAfterOrderByEndDesc(userId, LocalDateTime.now());
+                return bookingRepository.findByBooker_IdAndStartIsAfterOrderByEndDesc(
+                        userId,
+                        LocalDateTime.now(),
+                        pageable
+                );
             case WAITING:
-                return bookingRepository.findByBooker_IdAndStatusOrderByEndDesc(userId, BookingStatus.WAITING);
+                return bookingRepository.findByBooker_IdAndStatusOrderByEndDesc(
+                        userId,
+                        BookingStatus.WAITING,
+                        pageable
+                );
             case REJECTED:
-                return bookingRepository.findByBooker_IdAndStatusOrderByEndDesc(userId, BookingStatus.REJECTED);
+                return bookingRepository.findByBooker_IdAndStatusOrderByEndDesc(
+                        userId,
+                        BookingStatus.REJECTED,
+                        pageable
+                );
             default:
                 return List.of();
         }

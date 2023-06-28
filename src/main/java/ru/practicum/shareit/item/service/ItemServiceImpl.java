@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
@@ -76,8 +78,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ResponseItemWithCommentsDto> findByUserId(Long userId) {
-        return itemRepository.findByOwnerIdOrderByIdAsc(userId).stream()
+    public List<ResponseItemWithCommentsDto> findByUserId(Long userId, Integer from, Integer size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        return itemRepository.findByOwnerIdOrderByIdAsc(userId, pageable).stream()
                 .map(itemMapper::itemToResponseWithCommentDto)
                 .map(this::addBookingsToResponseWithCommentDto)
                 .map(this::addCommentsResponseWithComment)
@@ -114,11 +117,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ResponseItemDto> findByNameOrDescription(String text) {
+    public List<ResponseItemDto> findByNameOrDescription(String text, Integer from, Integer size) {
         if (text.isBlank()) {
             return List.of();
         }
-        return itemRepository.findAllByNameOrDescriptionContainingAndIsAvailableIgnoreCase(text).stream()
+        Pageable pageable = PageRequest.of(from / size, size);
+        return itemRepository.findAllByNameOrDescriptionContainingAndIsAvailableIgnoreCase(text, pageable).stream()
                 .map(itemMapper::itemToResponseDto)
                 .collect(Collectors.toList());
     }
