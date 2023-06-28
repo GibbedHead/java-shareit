@@ -6,6 +6,7 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.model.RequestNotFoundException;
 import ru.practicum.shareit.exception.model.UserNotFoundException;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.dto.RequestAddItemRequestDto;
@@ -65,12 +66,35 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ResponseItemRequestWithItemsDto> findAllNotOwned(Long userId, Integer from, Integer size) {
+        if (!userRepository.existsById(userId)) {
+            log.error(String.format(USER_NOT_FOUND_MESSAGE, userId));
+            throw new UserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, userId));
+        }
         Pageable pageable = PageRequest.of(from / size, size);
         List<ItemRequest> requests = itemRequestRepository.findAllByRequestorIdNotOrderByIdDesc(userId, pageable);
         return requests.stream()
                 .map(itemRequestMapper::itemRequestToResponseWithItemsDto)
                 .map(this::addItemsToResponseDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public ResponseItemRequestWithItemsDto findById(Long userId, Long id) {
+        if (!userRepository.existsById(userId)) {
+            log.error(String.format(USER_NOT_FOUND_MESSAGE, userId));
+            throw new UserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, userId));
+        }
+        ItemRequest itemRequest = itemRequestRepository.findById(id).orElseThrow(
+                () -> {
+                    log.error(String.format(REQUEST_NOT_FOUND_MESSAGE, id));
+                    return new RequestNotFoundException(String.format(REQUEST_NOT_FOUND_MESSAGE, id));
+                }
+        );
+        return addItemsToResponseDto(
+                itemRequestMapper.itemRequestToResponseWithItemsDto(
+                        itemRequest
+                )
+        );
     }
 
     private ResponseItemRequestWithItemsDto addItemsToResponseDto(ResponseItemRequestWithItemsDto dto) {

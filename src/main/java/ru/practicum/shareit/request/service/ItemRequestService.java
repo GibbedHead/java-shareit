@@ -13,4 +13,6 @@ public interface ItemRequestService {
     List<ResponseItemRequestWithItemsDto> findByUserId(Long userId);
 
     List<ResponseItemRequestWithItemsDto> findAllNotOwned(Long userId, Integer from, Integer size);
+
+    ResponseItemRequestWithItemsDto findById(Long userId, Long id);
 }

@@ -55,4 +55,14 @@ public class ItemRequestController {
         log.info(String.format("Get all item requests request from: %d; size: %d", from, size));
         return itemRequestService.findAllNotOwned(userId, from, size);
     }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseItemRequestWithItemsDto findById(
+            @RequestHeader(USER_ID_HEADER_NAME) Long userId,
+            @PathVariable Long id
+    ) {
+        log.info(String.format("Get item requests request by requestId#%d ", id));
+        return itemRequestService.findById(userId, id);
+    }
 }
