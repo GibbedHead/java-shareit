@@ -11,4 +11,6 @@ public interface ItemRequestService {
     ResponseItemRequestDto save(Long userId, RequestAddItemRequestDto requestAddItemRequestDto);
 
     List<ResponseItemRequestWithItemsDto> findByUserId(Long userId);
+
+    List<ResponseItemRequestWithItemsDto> findAllNotOwned(Long userId, Integer from, Integer size);
 }

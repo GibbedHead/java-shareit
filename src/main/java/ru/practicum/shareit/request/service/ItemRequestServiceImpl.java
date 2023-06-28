@@ -3,6 +3,8 @@ package ru.practicum.shareit.request.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.model.UserNotFoundException;
 import ru.practicum.shareit.item.service.ItemService;
@@ -55,6 +57,16 @@ public class ItemRequestServiceImpl implements ItemRequestService {
             throw new UserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, userId));
         }
         List<ItemRequest> requests = itemRequestRepository.findAllByRequestorIdOrderByIdDesc(userId);
+        return requests.stream()
+                .map(itemRequestMapper::itemRequestToResponseWithItemsDto)
+                .map(this::addItemsToResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ResponseItemRequestWithItemsDto> findAllNotOwned(Long userId, Integer from, Integer size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        List<ItemRequest> requests = itemRequestRepository.findAllByRequestorIdNotOrderByIdDesc(userId, pageable);
         return requests.stream()
                 .map(itemRequestMapper::itemRequestToResponseWithItemsDto)
                 .map(this::addItemsToResponseDto)
