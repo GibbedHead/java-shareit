@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private static final String USER_NOT_FOUND_MESSAGE = "User id=%d not found";
+    private static final String EMAIL_NOT_UNIQUE_MESSAGE = "Email must be unique";
     private final UserRepository userRepository;
     private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
 
@@ -37,8 +38,8 @@ public class UserServiceImpl implements UserService {
                     )
             );
         } catch (DataIntegrityViolationException exception) {
-            log.error("User not found. Email must be unique");
-            throw new NotUniqueFieldException("Email must be unique");
+            log.error(EMAIL_NOT_UNIQUE_MESSAGE);
+            throw new NotUniqueFieldException(EMAIL_NOT_UNIQUE_MESSAGE);
         }
     }
 
@@ -74,8 +75,8 @@ public class UserServiceImpl implements UserService {
                     )
             );
         } catch (DataIntegrityViolationException exception) {
-            log.error("User not found. Email must be unique");
-            throw new NotUniqueFieldException("Email must be unique");
+            log.error(EMAIL_NOT_UNIQUE_MESSAGE);
+            throw new NotUniqueFieldException(EMAIL_NOT_UNIQUE_MESSAGE);
         }
     }
 
