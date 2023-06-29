@@ -32,7 +32,7 @@ public class BookingValidator {
     }
 
     public static void checkItemIsAvailableOrThrowException(Item item) {
-        if (item.getAvailable() != null && !item.getAvailable()) {
+        if (!item.getAvailable()) {
             log.error(String.format(ITEM_NOT_AVAILABLE_MESSAGE, item.getId()));
             throw new BookingItemNotAvailableException(String.format(ITEM_NOT_AVAILABLE_MESSAGE, item.getId()));
         }

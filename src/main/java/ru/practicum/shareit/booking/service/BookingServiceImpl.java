@@ -158,7 +158,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private void makeApprove(Booking booking, Boolean approved) {
-        if (approved != null && approved) {
+        if (Boolean.TRUE.equals(approved)) {
             booking.setStatus(BookingStatus.APPROVED);
         } else {
             booking.setStatus(BookingStatus.REJECTED);
