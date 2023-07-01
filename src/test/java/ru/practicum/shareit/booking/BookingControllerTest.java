@@ -19,11 +19,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BookingControllerTest {
-    @Mock
-    private BookingService bookingService;
-    @InjectMocks
-    private BookingController bookingController;
-
     private final Long userId = 1L;
     private final Long bookingId = 1L;
     private final Long itemId = 1L;
@@ -36,6 +31,7 @@ class BookingControllerTest {
             null,
             null
     );
+    private final List<ResponseBookingDto> responseBookingDtos = List.of(responseBookingDto);
     private final ResponseBookingDto approvedResponseBookingDto = new ResponseBookingDto(
             bookingId,
             now,
@@ -44,7 +40,10 @@ class BookingControllerTest {
             null,
             null
     );
-    private final List<ResponseBookingDto> responseBookingDtos = List.of(responseBookingDto);
+    @Mock
+    private BookingService bookingService;
+    @InjectMocks
+    private BookingController bookingController;
 
     @Test
     void save_whenInvoke_thenReturnResponseDto() {

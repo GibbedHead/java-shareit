@@ -151,7 +151,6 @@ class ItemRequestServiceImplTest {
     @Test
     void findAllNotOwned_whenInvalidUser_thenUserNotFoundException() {
         Long userId = 1L;
-        Pageable pageable = PageRequest.of(0, 20);
 
         when(userRepository.existsById(userId))
                 .thenReturn(false);

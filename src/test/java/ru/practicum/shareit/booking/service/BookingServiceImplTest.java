@@ -577,11 +577,6 @@ class BookingServiceImplTest {
 
     @Test
     void findByUserIdAndState_whenInvalidState_thenBookingUnsupportedStateException() {
-        User user = new User(
-                1L,
-                "User1",
-                "user1@domain.com"
-        );
         String stringState = "UNSUPPORTED_STATE";
         final BookingUnsupportedStateException exception = assertThrows(
                 BookingUnsupportedStateException.class,
@@ -876,11 +871,6 @@ class BookingServiceImplTest {
 
     @Test
     void findByItemOwner_whenInvalidState_thenBookingUnsupportedStateException() {
-        User user = new User(
-                1L,
-                "User1",
-                "user1@domain.com"
-        );
         String stringState = "UNSUPPORTED_STATE";
         final BookingUnsupportedStateException exception = assertThrows(
                 BookingUnsupportedStateException.class,

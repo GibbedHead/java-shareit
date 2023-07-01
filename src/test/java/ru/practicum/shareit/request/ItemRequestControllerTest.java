@@ -19,11 +19,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ItemRequestControllerTest {
-    @Mock
-    private ItemRequestService itemRequestService;
-    @InjectMocks
-    private ItemRequestController itemRequestController;
-
     private final Long userId = 1L;
     private final Long requestId = 1L;
     private final Integer from = 0;
@@ -42,6 +37,10 @@ class ItemRequestControllerTest {
             List.of()
     );
     private final List<ResponseItemRequestWithItemsDto> requestsWithItemDtos = List.of(responseItemRequestWithItemsDto);
+    @Mock
+    private ItemRequestService itemRequestService;
+    @InjectMocks
+    private ItemRequestController itemRequestController;
 
     @Test
     void save_whenInvoke_thenReturnResponseDto() {
