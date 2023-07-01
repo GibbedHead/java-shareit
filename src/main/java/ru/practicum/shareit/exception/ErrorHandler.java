@@ -43,14 +43,6 @@ public class ErrorHandler {
         );
     }
 
-    @ExceptionHandler(AccessForbiddenException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorResponse handleForbiddenException(final Exception e) {
-        return new ErrorResponse(
-                e.getMessage()
-        );
-    }
-
     @ExceptionHandler(AccessBadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleAccessBadRequestException(final Exception e) {
