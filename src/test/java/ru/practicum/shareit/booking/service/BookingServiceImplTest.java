@@ -1,7 +1,10 @@
 package ru.practicum.shareit.booking.service;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.dto.RequestAddBookingDto;
 import ru.practicum.shareit.booking.dto.ResponseBookingDto;
@@ -27,22 +30,24 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class BookingServiceImplTest {
+    @Mock
+    private BookingRepository bookingRepository;
+    @Mock
+    private ItemRepository itemRepository;
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
+    private BookingServiceImpl bookingService;
 
     @Test
-    void requestDtoEndTimeBeforeStartTimeShouldThrowBookingDateException() {
+    void save_whenEndTimeBeforeStartTime_thenBookingDateException() {
         RequestAddBookingDto requestAddBookingDto = new RequestAddBookingDto(
                 1L,
                 LocalDateTime.now().plusHours(1),
                 LocalDateTime.now().minusHours(1)
-        );
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
         );
         final BookingDateException exception = assertThrows(
                 BookingDateException.class,
@@ -52,21 +57,13 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void requestDtoEndTimeEqualsStartTimeShouldThrowBookingDateException() {
+    void save_whenEndTimeEqualsStartTime_thenBookingDateException() {
         LocalDateTime now = LocalDateTime.now();
         RequestAddBookingDto requestAddBookingDto = new RequestAddBookingDto(
                 1L,
                 now,
                 now
         );
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
         final BookingDateException exception = assertThrows(
                 BookingDateException.class,
                 () -> bookingService.save(1L, requestAddBookingDto)
@@ -75,19 +72,11 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void requestDtoWrongItemShouldThrowItemNotFoundException() {
+    void save_whenInvalidItem_thenItemNotFoundException() {
         RequestAddBookingDto requestAddBookingDto = new RequestAddBookingDto(
                 99L,
                 LocalDateTime.now(),
                 LocalDateTime.now().plusHours(1)
-        );
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
         );
         when(itemRepository.findById(99L))
                 .thenReturn(Optional.empty());
@@ -99,7 +88,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void ownerBookingOwnItemShouldThrowBookingOwnItemException() {
+    void save_whenOwnerBookingOwnItem_thenBookingOwnItemException() {
         RequestAddBookingDto requestAddBookingDto = new RequestAddBookingDto(
                 1L,
                 LocalDateTime.now(),
@@ -113,14 +102,6 @@ class BookingServiceImplTest {
                 1L,
                 null
         );
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
         when(itemRepository.findById(1L))
                 .thenReturn(Optional.of(item));
         final BookingOwnItemException exception = assertThrows(
@@ -131,7 +112,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void bookingNotAvailableItemShouldThrowBookingItemNotAvailableException() {
+    void save_whenBookingNotAvailableItem_thenBookingItemNotAvailableException() {
         RequestAddBookingDto requestAddBookingDto = new RequestAddBookingDto(
                 1L,
                 LocalDateTime.now(),
@@ -145,14 +126,6 @@ class BookingServiceImplTest {
                 2L,
                 null
         );
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
         when(itemRepository.findById(1L))
                 .thenReturn(Optional.of(item));
         final BookingItemNotAvailableException exception = assertThrows(
@@ -163,7 +136,8 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void bookingFromWrongUserShouldThrowUserNotFoundException() {
+    void save_whenBookingFromWrongUser_thenUserNotFoundException() {
+        Long wrongUserId = 100L;
         RequestAddBookingDto requestAddBookingDto = new RequestAddBookingDto(
                 1L,
                 LocalDateTime.now(),
@@ -177,18 +151,10 @@ class BookingServiceImplTest {
                 2L,
                 null
         );
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
-        Long wrongUserId = 100L;
+
         when(itemRepository.findById(1L))
                 .thenReturn(Optional.of(item));
-        when(userRepository.findById(1L))
+        when(userRepository.findById(wrongUserId))
                 .thenReturn(Optional.empty());
         final UserNotFoundException exception = assertThrows(
                 UserNotFoundException.class,
@@ -198,7 +164,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void saveValidBooking() {
+    void save_whenInvoke_thenReturnDto() {
         LocalDateTime now = LocalDateTime.now();
         RequestAddBookingDto requestAddBookingDto = new RequestAddBookingDto(
                 1L,
@@ -226,14 +192,6 @@ class BookingServiceImplTest {
                 user,
                 BookingStatus.WAITING
         );
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
         when(itemRepository.findById(1L))
                 .thenReturn(Optional.of(item));
         when(userRepository.findById(1L))
@@ -246,27 +204,20 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void wrongBookingIdApproveShouldThrowBookingNotFoundException() {
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
+    void approve_whenInvalidBookingId_thenBookingNotFoundException() {
         Long wrongBookingId = 100L;
-        when(bookingRepository.findById(1L))
+        when(bookingRepository.findById(wrongBookingId))
                 .thenReturn(Optional.empty());
         final BookingNotFoundException exception = assertThrows(
                 BookingNotFoundException.class,
-                () -> bookingService.approve(1L, wrongBookingId, true)
+                () -> bookingService.approve(wrongBookingId, wrongBookingId, true)
         );
         assertThat(String.format("Booking id=%d not found", wrongBookingId), equalTo(exception.getMessage()));
     }
 
     @Test
-    void approveFromWrongUserShouldThrowUserNotFoundException() {
+    void approve_whenInvalidUser_thenUserNotFoundException() {
+        Long wrongUserId = 100L;
         LocalDateTime now = LocalDateTime.now();
         Item item = new Item(
                 1L,
@@ -289,28 +240,22 @@ class BookingServiceImplTest {
                 user,
                 BookingStatus.WAITING
         );
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
+
         when(bookingRepository.findById(1L))
                 .thenReturn(Optional.of(booking));
-        Long wrongUserId = 100L;
-        when(userRepository.findById(1L))
+        when(userRepository.findById(wrongUserId))
                 .thenReturn(Optional.empty());
+
         final UserNotFoundException exception = assertThrows(
                 UserNotFoundException.class,
                 () -> bookingService.approve(wrongUserId, 1L, true)
         );
+
         assertThat(String.format("User id=%d not found", wrongUserId), equalTo(exception.getMessage()));
     }
 
     @Test
-    void approveUserIfNotItemOwnerShouldThrowBookingItemNotAvailableException() {
+    void approve_whenUserIsNotItemOwner_thenBookingItemNotAvailableException() {
         LocalDateTime now = LocalDateTime.now();
         Item item = new Item(
                 1L,
@@ -332,14 +277,6 @@ class BookingServiceImplTest {
                 item,
                 user,
                 BookingStatus.WAITING
-        );
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
         );
         when(bookingRepository.findById(1L))
                 .thenReturn(Optional.of(booking));
@@ -354,7 +291,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void approveUserIfNotBookingOwnerShouldThrowBookingApprovingOwnBookingException() {
+    void approve_whenUserIsNotBookingOwner_thenBookingApprovingOwnBookingException() {
         LocalDateTime now = LocalDateTime.now();
         Item item = new Item(
                 1L,
@@ -377,14 +314,6 @@ class BookingServiceImplTest {
                 user,
                 BookingStatus.WAITING
         );
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
         when(bookingRepository.findById(1L))
                 .thenReturn(Optional.of(booking));
         Long userId = 1L;
@@ -398,7 +327,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void approveAlreadyApprovedShouldThrowBookingAlreadyApprovedException() {
+    void approve_whenAlreadyApproved_thenBookingAlreadyApprovedException() {
         LocalDateTime now = LocalDateTime.now();
         Item item = new Item(
                 1L,
@@ -426,19 +355,9 @@ class BookingServiceImplTest {
                 user,
                 BookingStatus.APPROVED
         );
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
         when(bookingRepository.findById(1L))
                 .thenReturn(Optional.of(booking));
         Long userId = 2L;
-        when(userRepository.findById(1L))
-                .thenReturn(Optional.of(user));
         when(userRepository.findById(2L))
                 .thenReturn(Optional.of(user2));
         final BookingAlreadyApprovedException exception = assertThrows(
@@ -449,7 +368,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void validApproveApproved() {
+    void approve_whenApprove_thenReturnApprovedDto() {
         LocalDateTime now = LocalDateTime.now();
         Item item = new Item(
                 1L,
@@ -485,19 +404,9 @@ class BookingServiceImplTest {
                 user,
                 BookingStatus.APPROVED
         );
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
         when(bookingRepository.findById(1L))
                 .thenReturn(Optional.of(booking));
         Long userId = 2L;
-        when(userRepository.findById(1L))
-                .thenReturn(Optional.of(user));
         when(userRepository.findById(2L))
                 .thenReturn(Optional.of(user2));
         when(bookingRepository.save(any(Booking.class)))
@@ -507,7 +416,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void validApproveRejected() {
+    void approve_whenReject_thenReturnRejectedDto() {
         LocalDateTime now = LocalDateTime.now();
         Item item = new Item(
                 1L,
@@ -543,19 +452,9 @@ class BookingServiceImplTest {
                 user,
                 BookingStatus.REJECTED
         );
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
         when(bookingRepository.findById(1L))
                 .thenReturn(Optional.of(booking));
         Long userId = 2L;
-        when(userRepository.findById(1L))
-                .thenReturn(Optional.of(user));
         when(userRepository.findById(2L))
                 .thenReturn(Optional.of(user2));
         when(bookingRepository.save(apprivedBooking))
@@ -565,27 +464,19 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findWrongBookingShouldThrowBookingNotFoundException() {
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
+    void findById_whenWrongBooking_thenBookingNotFoundException() {
         Long wrongBookingId = 100L;
-        when(bookingRepository.findById(1L))
+        when(bookingRepository.findById(wrongBookingId))
                 .thenReturn(Optional.empty());
         final BookingNotFoundException exception = assertThrows(
                 BookingNotFoundException.class,
-                () -> bookingService.findById(1L, wrongBookingId)
+                () -> bookingService.findById(wrongBookingId, wrongBookingId)
         );
         assertThat(String.format("Booking id=%d not found", wrongBookingId), equalTo(exception.getMessage()));
     }
 
     @Test
-    void findByIdByNotBookingOwnerButItemOwnerShouldBeValid() {
+    void findById_whenNotBookingOwnerButItemOwner_thenReturnDto() {
         LocalDateTime now = LocalDateTime.now();
         Long itemOwnerId = 2L;
         Long bookingOwnerId = 1L;
@@ -609,14 +500,6 @@ class BookingServiceImplTest {
                 item,
                 user,
                 BookingStatus.WAITING
-        );
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
         );
         when(bookingRepository.findById(1L))
                 .thenReturn(Optional.of(booking));
@@ -625,7 +508,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findByIdByNotItemOwnerButBookingOwnerShouldBeValid() {
+    void findById_whenNotItemOwnerButBookingOwner_thenReturnDto() {
         LocalDateTime now = LocalDateTime.now();
         Long itemOwnerId = 2L;
         Long bookingOwnerId = 1L;
@@ -650,14 +533,6 @@ class BookingServiceImplTest {
                 user,
                 BookingStatus.WAITING
         );
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
         when(bookingRepository.findById(1L))
                 .thenReturn(Optional.of(booking));
         ResponseBookingDto responseBookingDto = bookingService.findById(bookingOwnerId, 1L);
@@ -665,7 +540,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findByIdByNotItemOwnerAndNotBookingOwnerShouldThrowBookingNotOwnerOperationException() {
+    void findById_whenNotItemOwnerAndNotBookingOwner_thenBookingNotOwnerOperationException() {
         LocalDateTime now = LocalDateTime.now();
         Long itemOwnerId = 2L;
         Long bookingOwnerId = 1L;
@@ -690,14 +565,6 @@ class BookingServiceImplTest {
                 item,
                 user,
                 BookingStatus.WAITING
-        );
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
         );
         when(bookingRepository.findById(1L))
                 .thenReturn(Optional.of(booking));
@@ -709,23 +576,13 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findByUserIdAndStateWrongStateShouldThrowBookingUnsupportedStateException() {
+    void findByUserIdAndState_whenInvalidState_thenBookingUnsupportedStateException() {
         User user = new User(
                 1L,
                 "User1",
                 "user1@domain.com"
         );
         String stringState = "UNSUPPORTED_STATE";
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
-        when(userRepository.findById(1L))
-                .thenReturn(Optional.of(user));
         final BookingUnsupportedStateException exception = assertThrows(
                 BookingUnsupportedStateException.class,
                 () -> bookingService.findByUserIdAndState(1L, stringState, 0, 20)
@@ -734,17 +591,9 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findByUserIdAndStateWrongUserIdShouldThrowUserNotFoundException() {
+    void findByUserIdAndState_whenInvalidUserId_thenUserNotFoundException() {
         Long wrongUserId = 100L;
         String stringState = "ALL";
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
         when(userRepository.findById(wrongUserId))
                 .thenReturn(Optional.empty());
         final UserNotFoundException exception = assertThrows(
@@ -755,15 +604,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findByUserIdAndStateAllValid() {
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
+    void findByUserIdAndState_whenInvoke_thenDtosList() {
         LocalDateTime now = LocalDateTime.now();
         Long itemOwnerId = 2L;
         Long bookingOwnerId = 1L;
@@ -803,15 +644,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findByUserIdAndStateCurrentValid() {
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
+    void findByUserIdAndState_whenStateCurrent_thenReturnDtosList() {
         LocalDateTime now = LocalDateTime.now();
         Long itemOwnerId = 2L;
         Long bookingOwnerId = 1L;
@@ -858,15 +691,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findByUserIdAndStatePastValid() {
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
+    void findByUserIdAndState_whenPast_thenReturnDtosList() {
         LocalDateTime now = LocalDateTime.now();
         Long itemOwnerId = 2L;
         Long bookingOwnerId = 1L;
@@ -912,15 +737,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findByUserIdAndStateFutureValid() {
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
+    void findByUserIdAndState_whenFuture_thenReturnDtosList() {
         LocalDateTime now = LocalDateTime.now();
         Long itemOwnerId = 2L;
         Long bookingOwnerId = 1L;
@@ -966,15 +783,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findByUserIdAndStateWaitingValid() {
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
+    void findByUserIdAndState_whenWaiting_thenReturnDtosList() {
         LocalDateTime now = LocalDateTime.now();
         Long itemOwnerId = 2L;
         Long bookingOwnerId = 1L;
@@ -1020,15 +829,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findByUserIdAndStateRejectedValid() {
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
+    void findByUserIdAndState_whenRejected_thenReturnDtosList() {
         LocalDateTime now = LocalDateTime.now();
         Long itemOwnerId = 2L;
         Long bookingOwnerId = 1L;
@@ -1074,23 +875,13 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findByItemOwnerWrongStateShouldThrowBookingUnsupportedStateException() {
+    void findByItemOwner_whenInvalidState_thenBookingUnsupportedStateException() {
         User user = new User(
                 1L,
                 "User1",
                 "user1@domain.com"
         );
         String stringState = "UNSUPPORTED_STATE";
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
-        when(userRepository.findById(1L))
-                .thenReturn(Optional.of(user));
         final BookingUnsupportedStateException exception = assertThrows(
                 BookingUnsupportedStateException.class,
                 () -> bookingService.findByItemOwner(1L, stringState, 0, 20)
@@ -1099,17 +890,9 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findByItemOwnerWrongUserIdShouldThrowUserNotFoundException() {
+    void findByItemOwner_whenInvalidUserId_thenUserNotFoundException() {
         Long wrongUserId = 100L;
         String stringState = "ALL";
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
         when(userRepository.findById(wrongUserId))
                 .thenReturn(Optional.empty());
         final UserNotFoundException exception = assertThrows(
@@ -1120,15 +903,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findByItemOwnerAllValid() {
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
+    void findByItemOwner_whenAll_thenReturnDtosList() {
         LocalDateTime now = LocalDateTime.now();
         Long itemOwnerId = 2L;
         Long bookingOwnerId = 1L;
@@ -1168,15 +943,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findByItemOwnerCurrentValid() {
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
+    void findByItemOwner_whenCurrent_thenReturnDtosList() {
         LocalDateTime now = LocalDateTime.now();
         Long itemOwnerId = 2L;
         Long bookingOwnerId = 1L;
@@ -1222,15 +989,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findByItemOwnerPastValid() {
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
+    void findByItemOwner_whenPast_thenReturnDtosList() {
         LocalDateTime now = LocalDateTime.now();
         Long itemOwnerId = 2L;
         Long bookingOwnerId = 1L;
@@ -1276,15 +1035,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findByItemOwnerFutureValid() {
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
+    void findByItemOwner_whenFuture_thenReturnDtosList() {
         LocalDateTime now = LocalDateTime.now();
         Long itemOwnerId = 2L;
         Long bookingOwnerId = 1L;
@@ -1330,15 +1081,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findByItemOwnerWaitingValid() {
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
+    void findByItemOwner_whenWaiting_thenReturnDtosList() {
         LocalDateTime now = LocalDateTime.now();
         Long itemOwnerId = 2L;
         Long bookingOwnerId = 1L;
@@ -1384,15 +1127,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findByItemOwnerRejectedValid() {
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        BookingService bookingService = new BookingServiceImpl(
-                bookingRepository,
-                itemRepository,
-                userRepository
-        );
+    void findByItemOwner_whenRejected_thenReturnDtosList() {
         LocalDateTime now = LocalDateTime.now();
         Long itemOwnerId = 2L;
         Long bookingOwnerId = 1L;
