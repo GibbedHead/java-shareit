@@ -112,7 +112,7 @@ public class ItemServiceImpl implements ItemService {
             itemRepository.deleteById(itemId);
         } catch (EmptyResultDataAccessException e) {
             log.error(String.format(ITEM_NOT_FOUND_MESSAGE, itemId));
-            throw new UserNotFoundException(String.format(ITEM_NOT_FOUND_MESSAGE, itemId));
+            throw new ItemNotFoundException(String.format(ITEM_NOT_FOUND_MESSAGE, itemId));
         }
     }
 
@@ -146,8 +146,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ResponseItemForItemRequestDto> getResponseItemRequestWithItemsDtoByRequestId(Long requestId) {
-        List<Item> items = itemRepository.findAllByRequestId(requestId);
-        return items.stream()
+        return itemRepository.findAllByRequestId(requestId).stream()
                 .map(itemMapper::itemToResponseItemForItemRequestDto)
                 .collect(Collectors.toList());
     }

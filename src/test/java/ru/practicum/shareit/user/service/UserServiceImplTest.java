@@ -34,7 +34,7 @@ class UserServiceImplTest {
     private UserRepository userRepository;
 
     @InjectMocks
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @Test
     void save_whenDuplicateEmail_thenNotUniqueFieldException() {
