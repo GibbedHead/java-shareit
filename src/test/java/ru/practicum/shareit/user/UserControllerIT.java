@@ -26,13 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(UserController.class)
 class UserControllerIT {
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private MockMvc mockMvc;
-    @MockBean
-    private UserService userService;
-
     private static final String URL = "/users";
     private static final String URL_WITH_ID = URL + "/{id}";
     private static final String CONTENT_TYPE = "application/json";
@@ -76,6 +69,12 @@ class UserControllerIT {
             "",
             "user1email.com"
     );
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private UserService userService;
 
     @SneakyThrows
     @Test

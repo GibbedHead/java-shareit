@@ -27,13 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ItemController.class)
 class ItemControllerIT {
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private MockMvc mockMvc;
-    @MockBean
-    private ItemService itemService;
-
     private static final String USER_ID_HEADER_NAME = "X-Sharer-User-Id";
     private static final String URL = "/items";
     private static final String URL_WITH_ID = URL + "/{id}";
@@ -42,6 +35,12 @@ class ItemControllerIT {
     private static final String CONTENT_TYPE = "application/json";
     private final Long userId = 1L;
     private final Long itemId = 1L;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private ItemService itemService;
 
     @SneakyThrows
     @Test
