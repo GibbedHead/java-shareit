@@ -4,11 +4,15 @@ INSERT INTO public.users (id,name,email) VALUES
 	 (5,'other','other@other.com'),
 	 (6,'practicum','practicum@yandex.ru');
 
+INSERT INTO public.requests (id,description,requestor_id,created) VALUES
+	 (1,'Хотел бы воспользоваться щёткой для обуви',1,'2023-06-27 22:34:41');
+
 INSERT INTO public.items (id,name,description,is_available,owner_id,request_id) VALUES
 	 (1,'Аккумуляторная дрель','Аккумуляторная дрель + аккумулятор',true,1,NULL),
 	 (3,'Клей Момент','Тюбик суперклея марки Момент',true,4,NULL),
 	 (2,'Отвертка','Аккумуляторная отвертка',true,4,NULL),
-	 (4,'Кухонный стол','Стол для празднования',true,6,NULL);
+	 (4,'Кухонный стол','Стол для празднования',true,6,NULL),
+	 (5,'Щётка для обуви','Стандартная щётка для обуви',true,4,1);
 
 INSERT INTO public.bookings (id,start_date,end_date,item_id,booker_id,status) VALUES
 	 (1,'2023-06-27 22:34:34','2023-06-27 22:34:35',2,1,'APPROVED'),
