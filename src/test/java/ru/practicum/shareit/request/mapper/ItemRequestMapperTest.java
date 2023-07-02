@@ -3,7 +3,7 @@ package ru.practicum.shareit.request.mapper;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class ItemRequestMapperTest {
     private final ItemRequestMapper itemRequestMapper = Mappers.getMapper(ItemRequestMapper.class);

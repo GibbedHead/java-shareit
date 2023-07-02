@@ -7,7 +7,7 @@ import ru.practicum.shareit.user.model.User;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class UserMapperTest {
     private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
