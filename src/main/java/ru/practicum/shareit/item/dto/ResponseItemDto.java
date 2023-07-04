@@ -16,4 +16,5 @@ public class ResponseItemDto {
     Boolean available;
     ResponseBookingInItemDto lastBooking;
     ResponseBookingInItemDto nextBooking;
+    Long requestId;
 }

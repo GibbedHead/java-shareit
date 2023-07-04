@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Getter
@@ -18,13 +19,15 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @Column(nullable = false)
+    @NotNull
     String name;
-    @Column(nullable = false)
+    @NotNull
     String description;
-    @Column(name = "is_available", nullable = false)
+    @NotNull
+    @Column(name = "is_available")
     Boolean available;
-    @Column(name = "owner_id", nullable = false)
+    @NotNull
+    @Column(name = "owner_id")
     Long ownerId;
     @Column(name = "request_id")
     Long requestId;
