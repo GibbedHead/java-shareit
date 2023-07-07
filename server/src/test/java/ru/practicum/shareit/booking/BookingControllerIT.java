@@ -72,27 +72,6 @@ class BookingControllerIT {
 
     @SneakyThrows
     @Test
-    void save_whenInvalidTimeAndItemExistAndBookerNotOwnerAndItemAvailableAndUserExist_thenStatusBadRequest() {
-        RequestAddBookingDto requestAddBookingDto = Instancio.create(RequestAddBookingDto.class);
-        LocalDateTime now = LocalDateTime.now().minusHours(1);
-        requestAddBookingDto.setStart(now);
-        requestAddBookingDto.setEnd(now.plusHours(1));
-        ResponseBookingDto responseBookingDto = Instancio.create(ResponseBookingDto.class);
-        when(bookingService.save(anyLong(), any(RequestAddBookingDto.class)))
-                .thenReturn(responseBookingDto);
-
-        mockMvc.perform(
-                        post(URL)
-                                .contentType(CONTENT_TYPE)
-                                .content(objectMapper.writeValueAsString(requestAddBookingDto))
-                                .header(USER_ID_HEADER_NAME, userId)
-                )
-                .andExpect(status().isBadRequest());
-        verify(bookingService, never()).save(anyLong(), any(RequestAddBookingDto.class));
-    }
-
-    @SneakyThrows
-    @Test
     void save_whenValidTimeAndItemExistAndBookerNotOwnerAndItemAvailableAndUserNotExist_thenStatusNotFound() {
         RequestAddBookingDto requestAddBookingDto = Instancio.create(RequestAddBookingDto.class);
         LocalDateTime now = LocalDateTime.now().plusHours(1);

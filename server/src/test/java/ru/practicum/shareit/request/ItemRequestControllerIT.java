@@ -85,25 +85,6 @@ class ItemRequestControllerIT {
 
     @SneakyThrows
     @Test
-    void save_whenUserExistsAndInvalidAddDto_thenStatusBadRequest() {
-        RequestAddItemRequestDto requestAddItemRequestDto = Instancio.create(RequestAddItemRequestDto.class);
-        requestAddItemRequestDto.setDescription("");
-        when(itemRequestService.save(anyLong(), any(RequestAddItemRequestDto.class)))
-                .thenThrow(UserNotFoundException.class);
-
-        mockMvc.perform(
-                        post(URL)
-                                .contentType(CONTENT_TYPE)
-                                .content(objectMapper.writeValueAsString(requestAddItemRequestDto))
-                                .header(USER_ID_HEADER_NAME, userId)
-                )
-                .andExpect(status().isBadRequest());
-
-        verify(itemRequestService, never()).save(anyLong(), any(RequestAddItemRequestDto.class));
-    }
-
-    @SneakyThrows
-    @Test
     void findByUserId_whenUserExist_thenStatusOkAndDtosInResponse() {
         List<ResponseItemRequestWithItemsDto> responseItemRequestWithItemsDtos = Instancio
                 .ofList(ResponseItemRequestWithItemsDto.class)

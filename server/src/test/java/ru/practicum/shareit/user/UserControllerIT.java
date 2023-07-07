@@ -98,24 +98,6 @@ class UserControllerIT {
 
     @SneakyThrows
     @Test
-    void save_whenInvalidUser_thenStatusBadRequestAndErrorInfoSent() {
-        String response = mockMvc.perform(
-                        post(URL)
-                                .contentType(CONTENT_TYPE)
-                                .content(objectMapper.writeValueAsString(requestInvalidAddUserDto))
-                )
-                .andExpect(status().isBadRequest())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        String expected = "{\"errors\":{\"name\":\"User name must not be blank\",\"email\":\"User email must be correct email\"}}";
-        assertThat(expected, equalTo(response));
-        verify(userService, never()).save(any(RequestAddUserDto.class));
-    }
-
-    @SneakyThrows
-    @Test
     void save_whenNotUniqueUserEmail_thenStatusConflict() {
         when(userService.save(any(RequestAddUserDto.class)))
                 .thenThrow(NotUniqueFieldException.class);
@@ -162,18 +144,6 @@ class UserControllerIT {
                 )
                 .andExpect(status().isConflict());
         verify(userService, times(1)).update(anyLong(), any(RequestUpdateUserDto.class));
-    }
-
-    @SneakyThrows
-    @Test
-    void update_whenInvalidUser_thenStatusBadRequest() {
-        mockMvc.perform(
-                        patch(URL_WITH_ID, userId)
-                                .contentType(CONTENT_TYPE)
-                                .content(objectMapper.writeValueAsString(requestInvalidUpdateUserDto))
-                )
-                .andExpect(status().isBadRequest());
-        verify(userService, never()).update(anyLong(), any(RequestUpdateUserDto.class));
     }
 
     @SneakyThrows

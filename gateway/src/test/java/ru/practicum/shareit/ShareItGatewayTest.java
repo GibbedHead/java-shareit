@@ -19,8 +19,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-class ShareItTests {
-
+class ShareItGatewayTest {
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Test
@@ -28,6 +27,28 @@ class ShareItTests {
         RequestAddUserDto validUser = UserTestGenerator.getUser1();
         Set<ConstraintViolation<RequestAddUserDto>> validViolations = validator.validate(validUser);
         assertEquals(0, validViolations.size());
+    }
+
+    @Test
+    void testValidItem() {
+        RequestAddItemDto validItem = ItemTestGenerator.getItem();
+        Set<ConstraintViolation<RequestAddItemDto>> validViolations = validator.validate(validItem);
+        assertEquals(0, validViolations.size());
+    }
+
+    @Test
+    void bookingValidAdd() {
+        RequestAddBookingDto requestAddBookingDto = BookingTestGenerator.getRequestAddBookingDto();
+        Set<ConstraintViolation<RequestAddBookingDto>> availabilityViolations = validator.validate(requestAddBookingDto);
+        assertEquals(0, availabilityViolations.size());
+
+    }
+
+    @Test
+    void commentValidAdd() {
+        RequestAddCommentDto requestAddCommentDto = CommentTestGenerator.getAddCommentDto();
+        Set<ConstraintViolation<RequestAddCommentDto>> availabilityViolations = validator.validate(requestAddCommentDto);
+        assertEquals(0, availabilityViolations.size());
     }
 
     @Test
@@ -60,13 +81,6 @@ class ShareItTests {
     }
 
     @Test
-    void testValidItem() {
-        RequestAddItemDto validItem = ItemTestGenerator.getItem();
-        Set<ConstraintViolation<RequestAddItemDto>> validViolations = validator.validate(validItem);
-        assertEquals(0, validViolations.size());
-    }
-
-    @Test
     void requestItemNameShouldNotBeBlank() {
         RequestAddItemDto nullNameItem = ItemTestGenerator.getNullNameItem();
         Set<ConstraintViolation<RequestAddItemDto>> nullViolations = validator.validate(nullNameItem);
@@ -93,14 +107,6 @@ class ShareItTests {
         RequestAddItemDto nullAvailabilityItem = ItemTestGenerator.getNullAvailabilityItem();
         Set<ConstraintViolation<RequestAddItemDto>> availabilityViolations = validator.validate(nullAvailabilityItem);
         assertEquals(1, availabilityViolations.size());
-    }
-
-    @Test
-    void bookingValidAdd() {
-        RequestAddBookingDto requestAddBookingDto = BookingTestGenerator.getRequestAddBookingDto();
-        Set<ConstraintViolation<RequestAddBookingDto>> availabilityViolations = validator.validate(requestAddBookingDto);
-        assertEquals(0, availabilityViolations.size());
-
     }
 
     @Test
@@ -136,13 +142,6 @@ class ShareItTests {
         RequestAddBookingDto requestAddBookingDto = BookingTestGenerator.getRequestAddBookingPastStartDto();
         Set<ConstraintViolation<RequestAddBookingDto>> availabilityViolations = validator.validate(requestAddBookingDto);
         assertEquals(1, availabilityViolations.size());
-    }
-
-    @Test
-    void commentValidAdd() {
-        RequestAddCommentDto requestAddCommentDto = CommentTestGenerator.getAddCommentDto();
-        Set<ConstraintViolation<RequestAddCommentDto>> availabilityViolations = validator.validate(requestAddCommentDto);
-        assertEquals(0, availabilityViolations.size());
     }
 
     @Test
