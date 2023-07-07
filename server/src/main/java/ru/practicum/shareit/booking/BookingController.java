@@ -18,7 +18,6 @@ import java.util.List;
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
 @Slf4j
-@Validated
 public class BookingController {
 
     private static final String USER_ID_HEADER_NAME = "X-Sharer-User-Id";
@@ -28,7 +27,7 @@ public class BookingController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseBookingDto save(
             @RequestHeader(USER_ID_HEADER_NAME) Long userId,
-            @Valid @RequestBody RequestAddBookingDto requestAddBookingDto
+            @RequestBody RequestAddBookingDto requestAddBookingDto
     ) {
         log.info("Add booking request: " + requestAddBookingDto);
         return bookingService.save(userId, requestAddBookingDto);
@@ -64,12 +63,8 @@ public class BookingController {
     @ResponseStatus(HttpStatus.OK)
     public List<ResponseBookingDto> findByUserId(
             @RequestHeader(USER_ID_HEADER_NAME) Long userId,
-            @RequestParam(defaultValue = "ALL") String state,
-            @RequestParam(defaultValue = "0")
-            @PositiveOrZero(message = "From parameter must be greater or equal 0")
+            @RequestParam String state,
             Integer from,
-            @RequestParam(defaultValue = "20")
-            @Positive(message = "Size parameter must be positive")
             Integer size
     ) {
         log.info(String.format("Get bookings request by userId=%d and state=%s", userId, state));
@@ -80,12 +75,8 @@ public class BookingController {
     @ResponseStatus(HttpStatus.OK)
     public List<ResponseBookingDto> findByItemOwner(
             @RequestHeader(USER_ID_HEADER_NAME) Long userId,
-            @RequestParam(defaultValue = "ALL") String state,
-            @RequestParam(defaultValue = "0")
-            @PositiveOrZero(message = "From parameter must be greater or equal 0")
+            @RequestParam String state,
             Integer from,
-            @RequestParam(defaultValue = "20")
-            @Positive(message = "Size parameter must be positive")
             Integer size
     ) {
         log.info(String.format("Get bookings request by ownerId=%d and state=%s", userId, state));

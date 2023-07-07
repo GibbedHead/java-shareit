@@ -17,7 +17,6 @@ import java.util.List;
 @RequestMapping("/items")
 @RequiredArgsConstructor
 @Slf4j
-@Validated
 public class ItemController {
     private static final String USER_ID_HEADER_NAME = "X-Sharer-User-Id";
     private final ItemService itemService;
@@ -26,7 +25,7 @@ public class ItemController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseItemDto save(
             @RequestHeader(USER_ID_HEADER_NAME) Long userId,
-            @Valid @RequestBody RequestAddItemDto itemDto
+            @RequestBody RequestAddItemDto itemDto
     ) {
         log.info("Add item request: " + itemDto);
         return itemService.save(userId, itemDto);
@@ -37,7 +36,7 @@ public class ItemController {
     public ResponseItemDto update(
             @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @PathVariable Long id,
-            @Valid @RequestBody RequestUpdateItemDto itemUpdateDto
+            @RequestBody RequestUpdateItemDto itemUpdateDto
     ) {
         log.info("Update item id " + id + ". Data: " + itemUpdateDto);
         return itemService.update(userId, id, itemUpdateDto);
@@ -56,11 +55,7 @@ public class ItemController {
     @ResponseStatus(HttpStatus.OK)
     public List<ResponseItemWithCommentsDto> findByUserId(
             @RequestHeader(USER_ID_HEADER_NAME) Long userId,
-            @RequestParam(defaultValue = "0")
-            @PositiveOrZero(message = "From parameter must be greater or equal 0")
             Integer from,
-            @RequestParam(defaultValue = "20")
-            @Positive(message = "Size parameter must be positive")
             Integer size
     ) {
         log.info("Get items request by userId " + userId);
@@ -78,11 +73,7 @@ public class ItemController {
     @ResponseStatus(HttpStatus.OK)
     public List<ResponseItemDto> findByNameOrDescription(
             @RequestParam String text,
-            @RequestParam(defaultValue = "0")
-            @PositiveOrZero(message = "From parameter must be greater or equal 0")
             Integer from,
-            @RequestParam(defaultValue = "20")
-            @Positive(message = "Size parameter must be positive")
             Integer size) {
         log.info("Get items request by text '" + text + "'");
         return itemService.findByNameOrDescription(text, from, size);
@@ -93,7 +84,7 @@ public class ItemController {
     public ResponseCommentDto saveComment(
             @RequestHeader(USER_ID_HEADER_NAME) Long userId,
             @PathVariable Long id,
-            @Valid @RequestBody RequestAddCommentDto addCommentDto
+            @RequestBody RequestAddCommentDto addCommentDto
     ) {
         log.info(String.format("Add comment request userId=%d, itemId=%d, text='%s'", userId, id, addCommentDto));
         return itemService.saveComment(userId, id, addCommentDto);

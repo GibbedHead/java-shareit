@@ -21,14 +21,14 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseUserDto save(@Valid @RequestBody RequestAddUserDto userDto) {
+    public ResponseUserDto save(@RequestBody RequestAddUserDto userDto) {
         log.info("Add userDto request: " + userDto);
         return userService.save(userDto);
     }
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseUserDto update(@PathVariable long id, @Valid @RequestBody RequestUpdateUserDto userDto) {
+    public ResponseUserDto update(@PathVariable long id, @RequestBody RequestUpdateUserDto userDto) {
         log.info("Update user id " + id + ". Data: " + userDto);
         return userService.update(id, userDto);
     }

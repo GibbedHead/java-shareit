@@ -19,7 +19,6 @@ import java.util.List;
 @RequestMapping(path = "/requests")
 @RequiredArgsConstructor
 @Slf4j
-@Validated
 public class ItemRequestController {
 
     private static final String USER_ID_HEADER_NAME = "X-Sharer-User-Id";
@@ -29,7 +28,7 @@ public class ItemRequestController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseItemRequestDto save(
             @RequestHeader(USER_ID_HEADER_NAME) Long userId,
-            @Valid @RequestBody RequestAddItemRequestDto requestAddItemRequestDto
+            @RequestBody RequestAddItemRequestDto requestAddItemRequestDto
     ) {
         log.info(String.format("Add item request request: %s", requestAddItemRequestDto));
         return itemRequestService.save(userId, requestAddItemRequestDto);
@@ -46,11 +45,7 @@ public class ItemRequestController {
     @ResponseStatus(HttpStatus.OK)
     public List<ResponseItemRequestWithItemsDto> findAllNotOwned(
             @RequestHeader(USER_ID_HEADER_NAME) Long userId,
-            @RequestParam(defaultValue = "0")
-            @PositiveOrZero(message = "From parameter must be greater or equal 0")
             Integer from,
-            @RequestParam(defaultValue = "20")
-            @Positive(message = "Size parameter must be positive")
             Integer size
     ) {
         log.info(String.format("Get all item requests request from: %d; size: %d", from, size));
