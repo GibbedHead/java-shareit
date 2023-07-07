@@ -7,11 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 import ru.practicum.shareit.booking.dto.RequestAddBookingDto;
 import ru.practicum.shareit.booking.state.BookingState;
 import ru.practicum.shareit.client.BaseClient;
-
-import java.util.Map;
 
 @Service
 public class BookingClient extends BaseClient {
@@ -27,21 +27,50 @@ public class BookingClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> getBookings(long userId, BookingState state, Integer from, Integer size) {
-        Map<String, Object> parameters = Map.of(
-                "state", state.name(),
-                "from", from,
-                "size", size
-        );
-        return get("?state={state}&from={from}&size={size}", userId, parameters);
+    public ResponseEntity<Object> save(long userId, RequestAddBookingDto requestAddBookingDto) {
+        return post("", userId, requestAddBookingDto);
     }
 
-
-    public ResponseEntity<Object> bookItem(long userId, RequestAddBookingDto requestDto) {
-        return post("", userId, requestDto);
+    public ResponseEntity<Object> approve(long userId, Long bookingId, Boolean approved) {
+        UriComponents uriComponents = UriComponentsBuilder.newInstance()
+                .path("/{bookingId}")
+                .queryParam("approved", approved)
+                .buildAndExpand(bookingId);
+        return patch(uriComponents.toUriString(), userId);
     }
 
-    public ResponseEntity<Object> getBooking(long userId, Long bookingId) {
-        return get("/" + bookingId, userId);
+    public ResponseEntity<Object> findById(long userId, long bookingId) {
+        UriComponents uriComponents = UriComponentsBuilder.newInstance()
+                .path("/{bookingId}")
+                .buildAndExpand(bookingId);
+        return get(uriComponents.toUriString(), userId);
+    }
+
+    public ResponseEntity<Object> findByUserIdAndState(
+            long userId,
+            BookingState state,
+            Integer from,
+            Integer size) {
+        UriComponents uriComponents = UriComponentsBuilder.newInstance()
+                .path("")
+                .queryParam("state", state)
+                .queryParam("from", from)
+                .queryParam("size", size)
+                .build();
+        return get(uriComponents.toUriString(), userId);
+    }
+
+    public ResponseEntity<Object> findByItemOwner(
+            long userId,
+            BookingState state,
+            Integer from,
+            Integer size) {
+        UriComponents uriComponents = UriComponentsBuilder.newInstance()
+                .path("/owner")
+                .queryParam("state", state)
+                .queryParam("from", from)
+                .queryParam("size", size)
+                .build();
+        return get(uriComponents.toUriString(), userId);
     }
 }
