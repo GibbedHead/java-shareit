@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.RequestAddBookingDto;
 import ru.practicum.shareit.booking.state.BookingState;
+import ru.practicum.shareit.exception.booking.BookingUnsupportedStateException;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -68,7 +69,7 @@ public class BookingController {
             Integer size
     ) {
         BookingState state = BookingState.from(stateParam)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
+                .orElseThrow(() -> new BookingUnsupportedStateException("Unknown state: " + stateParam));
         log.info("Get bookings request by userId={} and state={}", userId, state);
         return bookingClient.findByUserIdAndState(userId, state, from, size);
     }
@@ -85,7 +86,7 @@ public class BookingController {
             Integer size
     ) {
         BookingState state = BookingState.from(stateParam)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
+                .orElseThrow(() -> new BookingUnsupportedStateException("Unknown state: " + stateParam));
         log.info("Get bookings request by ownerId={} and state={}", userId, state);
         return bookingClient.findByItemOwner(userId, state, from, size);
     }
