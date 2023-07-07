@@ -99,14 +99,6 @@ public class ErrorHandler {
         );
     }
 
-    @ExceptionHandler(BookingUnsupportedStateException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleBookingUnsupportedStateException(final Exception e) {
-        return new ErrorResponse(
-                e.getMessage()
-        );
-    }
-
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleConstraintViolationException(final Exception e) {

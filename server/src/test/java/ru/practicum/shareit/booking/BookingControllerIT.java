@@ -370,26 +370,6 @@ class BookingControllerIT {
 
     @SneakyThrows
     @Test
-    void findByUserId_whenInvalidStateUserExist_thenStatusBadRequest() {
-        when(bookingService.findByUserIdAndState(anyLong(), anyString(), anyInt(), anyInt()))
-                .thenThrow(BookingUnsupportedStateException.class);
-        String invalidState = "INVALID STATE";
-
-        mockMvc.perform(
-                        get(URL)
-                                .contentType(CONTENT_TYPE)
-                                .header(USER_ID_HEADER_NAME, userId)
-                                .param("state", invalidState)
-                                .param("from", "0")
-                                .param("size", "20")
-                )
-                .andExpect(status().isBadRequest());
-
-        verify(bookingService, times(1)).findByUserIdAndState(anyLong(), anyString(), anyInt(), anyInt());
-    }
-
-    @SneakyThrows
-    @Test
     void findByUserId_whenValidStateUserNotExist_thenStatusNotFound() {
         when(bookingService.findByUserIdAndState(anyLong(), anyString(), anyInt(), anyInt()))
                 .thenThrow(UserNotFoundException.class);
@@ -431,26 +411,6 @@ class BookingControllerIT {
                 .getContentAsString();
 
         assertThat(response, equalTo(objectMapper.writeValueAsString(responseBookingDtos)));
-        verify(bookingService, times(1)).findByItemOwner(anyLong(), anyString(), anyInt(), anyInt());
-    }
-
-    @SneakyThrows
-    @Test
-    void findByItemOwner_whenInvalidStateUserExist_thenStatusBadRequest() {
-        when(bookingService.findByItemOwner(anyLong(), anyString(), anyInt(), anyInt()))
-                .thenThrow(BookingUnsupportedStateException.class);
-        String invalidState = "INVALID STATE";
-
-        mockMvc.perform(
-                        get(URL_OWNER)
-                                .contentType(CONTENT_TYPE)
-                                .header(USER_ID_HEADER_NAME, userId)
-                                .param("state", invalidState)
-                                .param("from", "0")
-                                .param("size", "20")
-                )
-                .andExpect(status().isBadRequest());
-
         verify(bookingService, times(1)).findByItemOwner(anyLong(), anyString(), anyInt(), anyInt());
     }
 

@@ -78,13 +78,4 @@ public class BookingValidator {
             throw new BookingNotOwnerOperationException(NOT_SUPPORTED_OPERATION_MESSAGE);
         }
     }
-
-    public static BookingState getStateOrThrowException(String stringState) {
-        for (BookingState bookingState : BookingState.values()) {
-            if (bookingState.name().equalsIgnoreCase(stringState)) {
-                return bookingState;
-            }
-        }
-        throw new BookingUnsupportedStateException(String.format("Unknown state: %s", stringState));
-    }
 }

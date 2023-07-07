@@ -575,15 +575,7 @@ class BookingServiceImplTest {
         assertThat("Operation is not supported", equalTo(exception.getMessage()));
     }
 
-    @Test
-    void findByUserIdAndState_whenInvalidState_thenBookingUnsupportedStateException() {
-        String stringState = "UNSUPPORTED_STATE";
-        final BookingUnsupportedStateException exception = assertThrows(
-                BookingUnsupportedStateException.class,
-                () -> bookingService.findByUserIdAndState(1L, stringState, 0, 20)
-        );
-        assertThat(String.format("Unknown state: %s", stringState), equalTo(exception.getMessage()));
-    }
+
 
     @Test
     void findByUserIdAndState_whenInvalidUserId_thenUserNotFoundException() {
@@ -867,16 +859,6 @@ class BookingServiceImplTest {
                 20
         );
         assertThat(1L, equalTo(responseBookingDtos.get(0).getId()));
-    }
-
-    @Test
-    void findByItemOwner_whenInvalidState_thenBookingUnsupportedStateException() {
-        String stringState = "UNSUPPORTED_STATE";
-        final BookingUnsupportedStateException exception = assertThrows(
-                BookingUnsupportedStateException.class,
-                () -> bookingService.findByItemOwner(1L, stringState, 0, 20)
-        );
-        assertThat(String.format("Unknown state: %s", stringState), equalTo(exception.getMessage()));
     }
 
     @Test

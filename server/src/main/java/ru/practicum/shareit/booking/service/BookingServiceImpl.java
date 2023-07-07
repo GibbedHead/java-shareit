@@ -78,7 +78,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<ResponseBookingDto> findByUserIdAndState(Long userId, String state, Integer from, Integer size) {
-        BookingState bookingState = BookingValidator.getStateOrThrowException(state);
+        BookingState bookingState = BookingState.from(state).get();
         getUserOrThrowException(userId);
         Pageable pageable = PageRequest.of(from / size, size);
         List<Booking> bookings = getBookingsByUserIdAndState(userId, bookingState, pageable);
@@ -89,7 +89,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<ResponseBookingDto> findByItemOwner(Long userId, String state, Integer from, Integer size) {
-        BookingState bookingState = BookingValidator.getStateOrThrowException(state);
+        BookingState bookingState = BookingState.from(state).get();
         getUserOrThrowException(userId);
         Pageable pageable = PageRequest.of(from / size, size);
         List<Booking> bookings = getBookingsByOwnerIdAndState(userId, bookingState, pageable);
