@@ -14,12 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RequestAddBookingDto {
-    @NotNull(message = "Item id not be empty")
     Long itemId;
-    @FutureOrPresent(message = "Start date must be present or in future")
-    @NotNull(message = "Start date must not be empty")
     LocalDateTime start;
-    @Future(message = "End date must be in future")
-    @NotNull(message = "End date must not be empty")
     LocalDateTime end;
 }

@@ -12,6 +12,5 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RequestAddCommentDto {
-    @NotBlank(message = "Comment text must not be blank")
     String text;
 }

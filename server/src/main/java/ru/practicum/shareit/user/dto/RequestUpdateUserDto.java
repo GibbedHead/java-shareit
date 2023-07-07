@@ -13,6 +13,5 @@ import javax.validation.constraints.Email;
 public class RequestUpdateUserDto {
     Long id;
     String name;
-    @Email(message = "User email must be correct email")
     String email;
 }
