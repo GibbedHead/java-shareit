@@ -575,8 +575,6 @@ class BookingServiceImplTest {
         assertThat("Operation is not supported", equalTo(exception.getMessage()));
     }
 
-
-
     @Test
     void findByUserIdAndState_whenInvalidUserId_thenUserNotFoundException() {
         Long wrongUserId = 100L;

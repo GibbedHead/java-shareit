@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.practicum.shareit.booking.dto.RequestAddBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.state.BookingState;
 import ru.practicum.shareit.booking.status.BookingStatus;
 import ru.practicum.shareit.exception.booking.*;
 import ru.practicum.shareit.item.model.Item;
