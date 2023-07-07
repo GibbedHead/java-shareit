@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.Future;
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 public class RequestAddBookingDto {
     @NotNull(message = "Item id not be empty")
     Long itemId;
-    @Future(message = "Start date must not be in future")
+    @FutureOrPresent(message = "Start date must be present or in future")
     @NotNull(message = "Start date must not be empty")
     LocalDateTime start;
     @Future(message = "End date must not be in future")
